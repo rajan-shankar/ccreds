@@ -1,0 +1,364 @@
+---
+title: "paper_application_plots"
+format: html
+---
+
+```{r}
+library(tidyverse)
+library(pracma)
+library(gelnet)
+library(patchwork)
+library(gghighlight)
+theme_set(theme_bw(base_size = 12))
+
+p = 43
+```
+
+```{r}
+res_tune = readRDS("unc_outputs/real_data_full_model.rds")
+min_cv_model = readRDS("unc_outputs/real_data_outputs.rds") |> 
+  pluck("model")
+avg_y_z = readRDS("unc_outputs/average_y_z_values.rds") |> 
+  unlist()
+brain_regions = readRDS("unc_outputs/variable_names.rds") |> 
+  tail(40)
+```
+
+CV MAE heat map
+
+```{r}
+# CV MAE heat map
+res_tune |>
+  select(-full_fit) |> 
+  ggplot() +
+  aes(x = lambda_1, 
+      y = lambda_2) +
+  geom_tile(aes(fill = CV_MAE_y)) +
+  # geom_tile(aes(x = min_cv_model$lambda_1, y = min_cv_model$lambda_2)) +
+  labs(x = latex2exp::TeX("$\\lambda_1$"), 
+       y = latex2exp::TeX("$\\lambda_2$"), 
+       fill = "CV MAE") +
+  scale_fill_gradientn(
+    colours = tidyplots::colors_continuous_inferno |> rev()
+  ) + 
+  theme(
+    legend.position = "right"
+  ) +
+  scale_x_log10(expand = c(0, 0)) +
+  scale_y_log10(expand = c(0, 0))
+
+# save figure pdf: 3.5 x 4.7
+```
+
+Coefficient path plot
+
+```{r}
+coef_data = res_tune %>% 
+  mutate(beta = map(full_fit, ~ .$beta),
+         gamma = map(full_fit, ~ .$gamma)) %>% 
+  select(-time, -full_fit, -starts_with("CV")) %>% 
+  pivot_longer(c(beta, gamma), 
+               names_to = "parameter",
+               values_to = "value") %>% 
+  mutate(predictor = map2(
+    value, parameter, 
+    function(value, parameter) {
+      if (parameter == "beta") {
+        names = names(value)
+        names[1] = "Intercept"
+        names[2] = "x"
+      } else if (parameter == "gamma") {
+        names = names(value)
+        names[1] = "Intercept"
+      }
+      return(names)
+    }
+  )) %>% 
+  unnest(everything()) %>%
+  filter(str_detect(predictor, "z[0-9]"),
+         !(predictor %in% c("z1","z2","z3"))) |> 
+  mutate(
+    predictor = paste0(
+      "z",
+      as.numeric(str_extract(predictor, "[0-9]*$")) - 3
+    ),
+    predictor = fct_inorder(predictor)
+  ) |> 
+  mutate(selected_min_cv = rep(
+    as.character(
+      c(min_cv_model$beta[6:45], 
+      min_cv_model$gamma[5:44]) != 0
+    ),
+    times = 900
+    ),
+    brain_region = rep(brain_regions, times = 900*2),
+    brain_region = factor(brain_region, levels = brain_region_ordered_sign_max_val)
+  )
+  
+brain_region_ordered_sign_max_val = coef_data |> 
+  group_by(brain_region, parameter) |> 
+  summarise(sign_max_val = value[which.max(abs(value))]) |> 
+  pivot_wider(names_from = parameter, values_from = sign_max_val) |> 
+  mutate(beta_fair = beta / 30) |> 
+  mutate(best = ifelse(abs(beta_fair) > abs(gamma), beta_fair, gamma)) |> 
+  arrange(desc(best)) |> 
+  pull(brain_region)
+  #brain_region = factor(brain_region, levels = brain_regions_ordered)
+```
+
+```{r}
+coef_data |> 
+  filter((lambda_2 == min_cv_model$lambda_2 & parameter == "beta")
+         | (lambda_1 == min_cv_model$lambda_1 & parameter == "gamma")) |> 
+  mutate(lambda = ifelse(parameter == "beta", lambda_1, lambda_2)) |> 
+  select(-lambda_1, -lambda_2) |> 
+  # mutate(parameter = ifelse(parameter == "beta", 
+  #                           "SDMT score", 
+  #                           "Time-to-diagnosis")) |> 
+  ggplot() +
+  aes(x = lambda, y = value, 
+      colour = brain_region,
+      group = interaction(brain_region, parameter)
+      ) +
+  geom_line(linewidth = 0.8) +
+  facet_wrap(~ parameter, scales = "free_y") +
+  gghighlight(selected_min_cv == TRUE, 
+              use_direct_label = FALSE,
+              calculate_per_facet = TRUE,
+              unhighlighted_params = list(alpha = 0.4)) +
+  geom_vline(data = tibble(parameter = c("beta", "gamma"),
+                           lambda_chosen = c(min_cv_model$lambda_1,
+                                             min_cv_model$lambda_2)),
+             aes(xintercept = lambda_chosen),
+             linetype = "dashed"
+             ) +
+  labs(y = "Estimated coefficient", 
+       colour = NULL,
+       x = latex2exp::TeX("$\\lambda_1 \\ \\ \\ \\ \\ \\ \\ \\ \\ \\ \\ \\ \\ \\ \\ \\ \\ \\ \\ \\ \\ \\ \\ \\ \\ \\ \\ \\ \\ \\ \\ \\ \\ \\ \\ \\ \\ \\ \\ \\lambda_2$")) + 
+  scale_x_log10() +
+  scale_y_continuous(trans = 'pseudo_log',
+                     breaks = c(-100,-10,-3,0,3,10,100)) +
+  # scale_alpha_manual(values = c("TRUE" = 1, "FALSE" = 0.4))
+  # scale_color_manual(values = colorRampPalette(
+  #   tidyplots::colors_continuous_turbo)(16)
+  # ) +
+  theme_bw(base_size = 14) +
+  theme(panel.grid = element_blank()) +
+  theme(legend.position = "right")
+
+# save figure pdf: 11 x 4
+
+
+# Coefficient path plot using pseudo-log transformation
+coef_data |> 
+  filter(parameter == "beta",
+         lambda_2 == min_cv_model$lambda_2) |> 
+  # filter(parameter == "beta") |> 
+  # group_by(lambda_1, parameter, predictor) |> 
+  # summarise(mean_value = mean(value)) |> 
+  # ungroup() |> 
+  ggplot() +
+  aes(x = lambda_1, y = value, 
+      colour = predictor,
+      alpha = selected_min_cv
+      ) +
+  geom_line(linewidth = 0.8) +
+  gghighlight(selected_min_cv == TRUE, 
+              label_key = brain_region,
+              label_params = list(size = 3, hjust = 0.1),
+              line_label_type = "label_path") +
+  geom_vline(xintercept = min_cv_model$lambda_1,
+             linetype = "dashed") +
+  scale_x_log10() +
+  scale_y_continuous(trans = 'pseudo_log', 
+                     breaks = c(-100,-10,0,10,100)) +
+  scale_alpha_manual(values = c("TRUE" = 1, "FALSE" = 0.4)) +
+  # scale_colour_viridis_d() +
+  labs(x = latex2exp::TeX("$\\lambda_1$")) +
+  theme(legend.position = "none",
+        panel.grid = element_blank())
+
+
+coef_data |> 
+  filter(parameter == "beta",
+         lambda_2 == min_cv_model$lambda_2) |> 
+  # filter(parameter == "beta") |> 
+  # group_by(lambda_1, parameter, predictor) |> 
+  # summarise(mean_value = mean(value)) |> 
+  # ungroup() |> 
+  ggplot() +
+  aes(x = lambda_1, y = value, 
+      colour = brain_region
+      # alpha = selected_min_cv,
+      # linewidth = selected_min_cv
+      ) +
+  geom_line(linewidth = 0.8) +
+  gghighlight(selected_min_cv == TRUE, 
+              use_direct_label = FALSE) +
+  geom_vline(xintercept = min_cv_model$lambda_1,
+             linetype = "dashed") +
+  scale_x_log10() +
+  scale_y_continuous(trans = 'pseudo_log', 
+                     breaks = c(-100,-10,0,10,100)) +
+  # scale_alpha_manual(values = c("TRUE" = 1, "FALSE" = 0.2)) +
+  # scale_colour_viridis_d() +
+  labs(x = latex2exp::TeX("$\\lambda_1$")) +
+  theme(panel.grid = element_blank())
+
+# Coefficient path plot using pseudo-log transformation
+coef_data |> 
+  filter(parameter == "gamma",
+         lambda_1 == min_cv_model$lambda_1) |> 
+  ggplot() +
+  aes(x = lambda_2, y = value, 
+      colour = brain_region
+      ) +
+  geom_line(linewidth = 0.8) +
+  gghighlight(selected_min_cv == TRUE, 
+              label_key = brain_region,
+              label_params = list(size = 3, hjust = 0.1),
+              line_label_type = "label_path"
+              ) +
+  geom_vline(xintercept = min_cv_model$lambda_1,
+             linetype = "dashed") +
+  scale_x_log10() +
+  scale_y_continuous(trans = 'pseudo_log', 
+                     breaks = c(-10,-3,0,3,10)) +
+  # scale_colour_viridis_d() +
+  labs(x = latex2exp::TeX("$\\lambda_1$")) +
+  theme(panel.grid = element_blank())
+
+p1 + p2 + plot_layout(nrow = 2, guides = "collect")
+```
+
+Combine two plots
+
+```{r}
+
+```
+
+Predictive density plots
+
+```{r}
+var_individual = avg_y_z |> 
+  select(starts_with("z")) |> 
+  unlist()
+
+# y_individual = avg_y_z |> pull(y)
+y_individual = 60
+
+fy_log = function(y, x, z, model) {
+  p = length(z)
+  mean_par = model$beta[1] + model$beta[2]*x + drop(
+    model$beta[3:(p+2)] %*% z
+  )
+  
+  dnorm(y, mean = mean_par, sd = sqrt(model$sigma_sq), log = TRUE)
+}
+fx_log = function(x, z, model) {
+  p = length(z)
+  mean_par = exp(
+    model$gamma[1] + drop(model$gamma[2:(p+1)] %*% z)
+  )
+  
+  dchisq(x, df = mean_par, log = TRUE)
+}
+joint_f_log = function(y, x, z, model) {
+  fy_log(y, x, z, model) + fx_log(x, z, model)
+}
+
+x = seq(0, 20, length.out = 200)
+y = seq(25, 75, length.out = 200)
+diff_x = x[2] - x[1]
+diff_y = y[2] - y[1]
+  
+joint_density_data = expand.grid(x = x, y = y) |> 
+  as_tibble() |> 
+  mutate(
+    joint_density = exp(joint_f_log(
+      x = x, 
+      y = y, 
+      z = var_individual,
+      model = min_cv_model
+    ))
+  )
+  
+marginal_x_density_data = tibble(x) |> 
+  mutate(
+    marginal_density = exp(fx_log(
+      x = x, 
+      z = var_individual, 
+      model = min_cv_model
+    ))
+  )
+
+conditional_x_density_data = tibble(x) |> 
+  mutate(y = y_individual) |> 
+  mutate(
+    joint_density = exp(joint_f_log(
+      x = x, 
+      y = y,
+      z = var_individual, 
+      model = min_cv_model
+    ))
+  ) |> 
+  mutate(
+    conditional_density = joint_density / (sum(joint_density) * diff_x)
+  )
+```
+
+```{r}
+p1 = joint_density_data |> 
+  ggplot(aes(x = x, y = y, z = joint_density)) +
+  geom_contour_filled(bins = 8) +
+  geom_hline(yintercept = y_individual, 
+             linetype = "dashed", colour = "orange", linewidth = 1) +
+  labs(x = "Time-to-diagnosis", y = "SDMT score",
+      # fill = "Density of f(X, Y | Z = z)"
+      ) +
+  theme_bw(base_size = 14) +
+  theme(legend.position = "none") +
+  scale_fill_grey(start = 1, end = 0.2) +
+  scale_x_continuous(expand = c(0, 0), limits = c(0, 20)) +
+  scale_y_continuous(expand = c(0, 0), limits = c(25, 75))
+
+p2 = conditional_x_density_data |> 
+  full_join(marginal_x_density_data, by = "x") |> 
+  pivot_longer(c(conditional_density, marginal_density)) |> 
+  mutate(name = factor(name, levels = c(
+    "conditional_density",
+    "marginal_density"
+    ))) |> 
+  ggplot(aes(x = x, y = value)) +
+  geom_line(aes(colour = name)) +
+  geom_area(aes(fill = name), alpha = 0.2, position = "identity") +
+  labs(x = "Time-to-diagnosis", y = "Density", colour = NULL, fill = NULL) +
+  scale_color_manual(
+    labels = c(
+      "conditional_density" = latex2exp::TeX(
+        "$f(X \\ | \\ Z = z_i, Y = y_i)$"),
+      "marginal_density" = latex2exp::TeX("$f(X \\ | \\ Z = z_i)$")
+    ),
+    values = c("conditional_density" = "orange", 
+               "marginal_density" = "black")
+  ) +
+  scale_fill_manual(
+    labels = c(
+      "conditional_density" = latex2exp::TeX(
+        "$f(X \\ | \\ Z = z_i, Y = y_i)$"),
+      "marginal_density" = latex2exp::TeX("$f(X \\ | \\ Z = z_i)$")
+    ),
+    values = c("conditional_density" = "orange", 
+               "marginal_density" = "black")
+  ) +
+  theme_bw(base_size = 14) +
+  theme(legend.position = "bottom") +
+  guides(colour = guide_legend(nrow = 1))
+
+p1 + p2 + plot_layout(ncol = 1, axis_titles = "collect_x")
+
+# save figure pdf: 10 x 3??
+```
+
+
+

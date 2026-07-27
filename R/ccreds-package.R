@@ -2,7 +2,7 @@
 "_PACKAGE"
 
 ## usethis namespace: start
-#' @importFrom stats dchisq dgamma dnorm sd uniroot
+#' @importFrom stats dchisq dgamma dnorm qchisq sd uniroot
 ## usethis namespace: end
 NULL
 
