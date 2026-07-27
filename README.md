@@ -15,11 +15,11 @@ Install from GitHub with:
 pak::pak("rajan-shankar/ccreds")
 ```
 
-Or install from a local clone:
+OR if using Windows:
 
 ```r
 # install.packages("devtools")
-devtools::install()
+devtools::install_github("rajan-shankar/ccreds")
 ```
 
 ## Usage
