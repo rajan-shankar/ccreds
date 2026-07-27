@@ -1,5 +1,5 @@
 Package: ccreds
-Title: Feature Selection in Censored-Covariate Regression Models
+Title: Censored-Covariate Regression with Dual Selection
 Version: 0.1.0
 Authors@R: c(
     person("Rajan", "Shankar", email = "rajan.shankar@sydney.edu.au",
@@ -17,7 +17,7 @@ Description: Implements a penalised observed-data log-likelihood method for
 URL: https://rajan-shankar.github.io/ccreds/,
     https://github.com/rajan-shankar/ccreds
 BugReports: https://github.com/rajan-shankar/ccreds/issues
-License: MIT + file LICENSE
+License: GPL-3
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
 Imports:
