@@ -1,0 +1,21 @@
+url: https://rajan-shankar.github.io/ccreds/
+
+template:
+  bootstrap: 5
+
+reference:
+  - title: Model fitting
+    desc: Fit censored-covariate regression models with cross-validated penalty selection.
+    contents:
+      - ccreds
+
+  - title: Visualisation
+    desc: Plot cross-validation results, coefficient paths, and predictive densities.
+    contents:
+      - plot_cv
+      - plot_coefficient_paths
+      - plot_density
+
+  - title: Package
+    contents:
+      - ccreds-package

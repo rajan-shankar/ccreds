@@ -11,3 +11,6 @@
 
 # Positron / Posit Assistant
 .positai/
+/doc/
+/Meta/
+docs/

@@ -1,0 +1,212 @@
+---
+title: "Getting Started with ccreds"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Getting Started with ccreds}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  fig.width = 7,
+  fig.height = 5
+)
+```
+
+This vignette walks through a complete `ccreds` workflow: simulating
+censored-covariate regression data, fitting the model with
+cross-validated penalty selection, and visualising the results.
+
+## Setup
+
+```{r setup}
+library(ccreds)
+library(MASS)
+library(dplyr)
+```
+
+## Simulate data
+
+We generate data from the censored-covariate regression model with
+$n = 200$ observations and $p = 10$ features.
+
+**Response-variable model:**
+$$y_i = \beta_0 + \alpha x_i + \boldsymbol{\beta}^\top \mathbf{z}_i + \varepsilon_i, \quad \varepsilon_i \sim N(0, \sigma^2)$$
+
+**Censored-covariate model:**
+$$X_i \mid \mathbf{z}_i \sim \chi^2(\mu_i), \quad \mu_i = \exp(\gamma_0 + \boldsymbol{\gamma}^\top \mathbf{z}_i)$$
+
+We set $\boldsymbol{\beta}$ and $\boldsymbol{\gamma}$ to be sparse with
+partially overlapping support, so that some features affect only the
+response, some affect only the censored covariate, and some affect both.
+
+```{r simulate}
+set.seed(8371)
+
+n <- 200
+p <- 10
+
+# Correlated features (AR(0.5) structure)
+rho <- 0.5
+Sigma <- 9 * toeplitz(rho^(0:(p - 1)))
+z <- mvrnorm(n = n, mu = rep(0, p), Sigma = Sigma)
+
+# True parameters
+beta_0 <- 5
+alpha <- 10
+beta <- c(4, 4, 2, 0, 0, 0, 0, 0, -2, -4)
+sigma_sq <- 100
+
+gamma_0 <- 2
+gamma <- c(0, 0.04, 0.04, 0.02, 0.02, 0, 0, 0, 0, 0)
+
+# Generate the censored covariate x
+x_mean <- exp(cbind(1, z) %*% c(gamma_0, gamma)) |> drop()
+x <- rchisq(n, df = x_mean)
+
+# Generate censoring times to achieve ~50% censoring
+compute_c_mean <- function(censoring_rate, x_mean) {
+  f <- function(c_mean) {
+    1 - pbeta(0.5, x_mean / 2, c_mean / 2) - censoring_rate
+  }
+  uniroot(f, lower = 1e-12, upper = 1000)$root
+}
+c_mean <- vapply(x_mean, \(m) compute_c_mean(0.5, m), numeric(1))
+cens <- rchisq(n, df = c_mean)
+
+# Generate response
+e <- rnorm(n, mean = 0, sd = sqrt(sigma_sq))
+y <- cbind(1, x, z) %*% c(beta_0, alpha, beta) + e
+
+# Observed covariate and censoring indicator
+w <- pmin(x, cens)
+d <- as.numeric(x <= cens)
+
+# Assemble the data frame in the format ccreds() expects
+z_df <- as.data.frame(z)
+colnames(z_df) <- paste0("z", 1:p)
+dat <- tibble(
+  case = 1:n,
+  y = drop(y),
+  w = w,
+  d = d
+) |>
+  bind_cols(z_df)
+
+dat
+```
+
+```{r cens-rate}
+mean(dat$d == 0)
+```
+
+## Fit the model
+
+We search over a small grid of penalty parameters. In practice you would
+use a finer grid and potentially run in parallel with `cores > 1`.
+
+```{r fit, message = FALSE}
+lambda_1s <- c(0.01, 0.05, 0.1, 0.5, 1)
+lambda_2s <- c(0.01, 0.05, 0.1, 0.5, 1)
+
+results <- ccreds(
+  data = dat,
+  lambda_1s = lambda_1s,
+  lambda_2s = lambda_2s,
+  k = 5
+)
+
+results
+```
+
+## Identify the best model
+
+The best $(\lambda_1, \lambda_2)$ pair is chosen by minimising the
+cross-validated mean absolute error for the response, `CV_MAE_y`.
+
+```{r best-model}
+best <- results |> slice_min(CV_MAE_y, n = 1)
+best |> select(lambda_1, lambda_2, CV_MAE_y)
+
+fit <- best$full_fit[[1]]
+```
+
+We can inspect the estimated coefficients and compare them to the truth:
+
+```{r coefficients}
+# Response-model coefficients
+tibble(
+  feature = paste0("z", 1:p),
+  true_beta = beta,
+  estimated_beta = round(fit$beta, 3)
+)
+
+# Censored-covariate coefficients
+tibble(
+  feature = paste0("z", 1:p),
+  true_gamma = gamma,
+  estimated_gamma = round(fit$gamma, 5)
+)
+```
+
+## Visualise: Cross-validation heatmap
+
+`plot_cv()` shows how the CV metric varies over the penalty grid.
+The white cross marks the optimal pair.
+
+```{r plot-cv, fig.alt = "Heatmap of cross-validated MAE over the lambda grid."}
+plot_cv(results)
+```
+
+You can also plot `CV_MAE_x` (prediction error for the censored
+covariate among complete observations):
+
+```{r plot-cv-x, fig.alt = "Heatmap of cross-validated MAE for x."}
+plot_cv(results, metric = "CV_MAE_x")
+```
+
+## Visualise: Coefficient paths
+
+`plot_coefficient_paths()` shows how the estimated coefficients change
+as the penalty parameter varies, holding the other penalty fixed at
+the value from the best model.
+
+```{r coef-paths-beta, fig.alt = "Coefficient paths for beta as lambda_1 varies."}
+plot_coefficient_paths(results, component = "beta", highlight = TRUE)
+```
+
+```{r coef-paths-gamma, fig.alt = "Coefficient paths for gamma as lambda_2 varies."}
+plot_coefficient_paths(results, component = "gamma", highlight = TRUE)
+```
+
+## Visualise: Predictive densities
+
+`plot_density()` displays the joint or conditional density of
+$(y, x)$ for a given feature vector $\mathbf{z}$.
+
+```{r density-joint, fig.alt = "Joint density contour plot of y and x."}
+z_new <- rep(0, p)
+plot_density(fit, z = z_new)
+```
+
+Supplying `y_given` shows the marginal density $f(x \mid \mathbf{z})$
+alongside the conditional density $f(x \mid \mathbf{z}, y)$:
+
+```{r density-conditional, fig.alt = "Marginal vs conditional density of x given z and y."}
+plot_density(fit, z = z_new, y_given = 50)
+```
+
+## Summary
+
+The typical `ccreds` workflow is:
+
+1. **Prepare data** in the required format: `case`, `y`, `w`, `d`,
+   `z1`, ..., `zp`.
+2. **Fit** with `ccreds()` over a grid of $(\lambda_1, \lambda_2)$
+   values.
+3. **Select** the best model by minimising `CV_MAE_y`.
+4. **Visualise** with `plot_cv()`, `plot_coefficient_paths()`, and
+   `plot_density()`.

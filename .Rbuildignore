@@ -4,3 +4,9 @@
 ^paper\.pdf$
 ^\.positai$
 ^example_code$
+^doc$
+^Meta$
+^_pkgdown\.yml$
+^docs$
+^pkgdown$
+^\.github$
