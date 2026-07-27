@@ -1,16 +1,16 @@
 # ccreds
 
-Feature selection in censored-covariate regression models, as described
-in:
+ccreds is an R package for performing Censored-Covariate Regression with
+Dual Selection. ccreds allows users to fit penalised censored-covariate
+regression models with two separate L1 penalties — one for selecting
+features associated with the response variable and one for selecting
+features associated with the censored covariate. Tuning parameters are
+selected via cross-validation. Functions for producing visual
+diagnostics, such as cross-validation heat maps, coefficient paths, and
+plotting estimated densities, are provided.
 
 > Shankar R, Garcia T, Ormerod J, Tarr G (2026). “Feature Selection in
 > Censored-Covariate Regression Models.” *Statistics in Medicine*.
-
-The package fits a penalised censored-covariate regression model using
-an EM algorithm with two separate L1 penalties — one for features
-associated with the response variable and one for features associated
-with the censored covariate. Tuning parameters are selected via
-cross-validation.
 
 ## Installation
 
