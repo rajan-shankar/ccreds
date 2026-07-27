@@ -1,0 +1,34 @@
+Package: ccreds
+Title: Feature Selection in Censored-Covariate Regression Models
+Version: 0.1.0
+Authors@R: c(
+    person("Rajan", "Shankar", email = "rajan.shankar@sydney.edu.au",
+           role = c("aut", "cre")),
+    person("Tanya", "Garcia", role = "aut"),
+    person("John", "Ormerod", role = "aut"),
+    person("Garth", "Tarr", role = "aut")
+  )
+Description: Implements a penalised observed-data log-likelihood method for
+    feature selection in censored-covariate regression models. Uses two
+    separate L1 penalties to select features associated with the response
+    variable and features associated with the censored covariate, via an
+    Expectation-Minimisation (EM) algorithm. Tuning parameters are chosen
+    by cross-validation.
+License: MIT + file LICENSE
+Encoding: UTF-8
+Roxygen: list(markdown = TRUE)
+Imports:
+    dplyr,
+    gelnet,
+    lbfgs,
+    pracma,
+    purrr,
+    stringr,
+    tibble,
+    tidyr
+Suggests:
+    furrr,
+    future,
+    testthat (>= 3.0.0)
+Config/testthat/edition: 3
+Config/roxygen2/version: 8.0.0

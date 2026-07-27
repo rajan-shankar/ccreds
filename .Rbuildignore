@@ -1,0 +1,5 @@
+^.*\.Rproj$
+^\.Rproj\.user$
+^main_functions\.R$
+^paper\.pdf$
+^\.positai$

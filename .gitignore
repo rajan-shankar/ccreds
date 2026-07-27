@@ -1,0 +1,13 @@
+# R
+.Rproj.user
+.Rhistory
+.Rdata
+.httr-oauth
+.DS_Store
+
+# Package build artifacts
+*.tar.gz
+*.Rcheck/
+
+# Positron / Posit Assistant
+.positai/
