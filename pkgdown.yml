@@ -3,7 +3,7 @@ pkgdown: 2.2.1
 pkgdown_sha: ~
 articles:
   ccreds-workflow: ccreds-workflow.html
-last_built: 2026-07-28T05:37Z
+last_built: 2026-07-28T05:40Z
 urls:
   reference: https://rajan-shankar.github.io/ccreds/reference
   article: https://rajan-shankar.github.io/ccreds/articles
