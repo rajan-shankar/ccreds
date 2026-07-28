@@ -3,10 +3,14 @@ Title: Censored-Covariate Regression with Dual Selection
 Version: 0.1.0
 Authors@R: c(
     person("Rajan", "Shankar", email = "rajan.shankar@sydney.edu.au",
-           role = c("aut", "cre")),
-    person("Tanya", "Garcia", role = "aut"),
-    person("John", "Ormerod", role = "aut"),
-    person("Garth", "Tarr", role = "aut")
+           role = c("aut", "cre"),
+           comment = c(ORCID = "0009-0001-9379-6727")),
+    person("Tanya", "Garcia", role = "aut",
+           comment = c(ORCID = "0000-0001-9900-4025")),
+    person("John", "Ormerod", role = "aut",
+           comment = c(ORCID = "0000-0002-4650-7507")),
+    person("Garth", "Tarr", role = "aut",
+           comment = c(ORCID = "0000-0002-6605-7478"))
   )
 Description: Implements a penalised observed-data log-likelihood method for
     feature selection in censored-covariate regression models. Uses two
