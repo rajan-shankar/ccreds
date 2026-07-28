@@ -1,4 +1,4 @@
-# ccreds: Feature Selection in Censored-Covariate Regression Models
+# ccreds: Censored-Covariate Regression with Dual Selection
 
 Implements a penalised observed-data log-likelihood method for feature
 selection in censored-covariate regression models. Uses two separate L1

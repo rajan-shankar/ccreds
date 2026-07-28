@@ -6,7 +6,7 @@ Fit censored-covariate regression models with cross-validated penalty
 selection.
 
 - [`ccreds()`](https://rajan-shankar.github.io/ccreds/reference/ccreds.md)
-  : Feature Selection in Censored-Covariate Regression Models
+  : Censored-Covariate Regression with Dual Selection
 
 ## Visualisation
 
@@ -23,4 +23,4 @@ densities.
 ## Package
 
 - [`ccreds-package`](https://rajan-shankar.github.io/ccreds/reference/ccreds-package.md)
-  : ccreds: Feature Selection in Censored-Covariate Regression Models
+  : ccreds: Censored-Covariate Regression with Dual Selection

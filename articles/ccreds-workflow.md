@@ -26,20 +26,18 @@ library(dplyr)
 
 ## Simulate data
 
-We generate data from the censored-covariate regression model with
-$`n = 200`$ observations and $`p = 10`$ features.
+We generate data from the censored-covariate regression model with \\n =
+200\\ observations and \\p = 10\\ features.
 
-**Response-variable model:**
-``` math
-y_i = \beta_0 + \alpha x_i + \boldsymbol{\beta}^\top \mathbf{z}_i + \varepsilon_i, \quad \varepsilon_i \sim N(0, \sigma^2)
-```
+**Response-variable model:** \\y_i = \beta_0 + \alpha x_i +
+\boldsymbol{\beta}^\top \mathbf{z}\_i + \varepsilon_i, \quad
+\varepsilon_i \sim N(0, \sigma^2)\\
 
-**Censored-covariate model:**
-``` math
-X_i \mid \mathbf{z}_i \sim \chi^2(\mu_i), \quad \mu_i = \exp(\gamma_0 + \boldsymbol{\gamma}^\top \mathbf{z}_i)
-```
+**Censored-covariate model:** \\X_i \mid \mathbf{z}\_i \sim
+\chi^2(\mu_i), \quad \mu_i = \exp(\gamma_0 + \boldsymbol{\gamma}^\top
+\mathbf{z}\_i)\\
 
-We set $`\boldsymbol{\beta}`$ and $`\boldsymbol{\gamma}`$ to be sparse
+We set \\\boldsymbol{\beta}\\ and \\\boldsymbol{\gamma}\\ to be sparse
 with partially overlapping support, so that some features affect only
 the response, some affect only the censored covariate, and some affect
 both.
@@ -100,18 +98,18 @@ dat <- tibble(
 
 dat
 #> # A tibble: 200 × 14
-#>     case      y     w     d     z1     z2     z3      z4    z5     z6     z7
-#>    <int>  <dbl> <dbl> <dbl>  <dbl>  <dbl>  <dbl>   <dbl> <dbl>  <dbl>  <dbl>
-#>  1     1 176.    9.32     0  1.07   5.09  -1.76  -5.49   -1.21 -6.77  -6.46 
-#>  2     2  50.9   4.03     1  3.85   0.857 -2.32  -5.36   -5.48 -3.39  -2.34 
-#>  3     3  54.6   3.44     1 -4.05   1.53  -4.13   2.95   -1.12 -1.33  -4.18 
-#>  4     4   3.39  3.17     0 -5.46  -2.77  -1.82  -0.0966 -5.03  1.25  -1.25 
-#>  5     5  98.4   7.10     1 -1.21   2.93  -1.24  -5.62   -1.16  0.253 -1.52 
-#>  6     6 171.   12.5      1  2.88   3.54   4.06  -1.46    1.33  3.93   4.62 
-#>  7     7 185.   15.3      1 -1.69   7.12   4.40   3.00    1.65  0.845 -0.617
-#>  8     8 128.    3.56     0  0.582  0.351 -2.86  -0.813  -4.13 -5.91  -5.39 
-#>  9     9  85.2   2.65     0  1.64  -1.65   0.550  0.277   1.14 -0.174 -3.74 
-#> 10    10 256.    9.70     0 -1.55  -0.150  3.39   3.62    1.91  1.06   1.28 
+#>     case      y     w     d     z1     z2     z3     z4     z5      z6     z7
+#>    <int>  <dbl> <dbl> <dbl>  <dbl>  <dbl>  <dbl>  <dbl>  <dbl>   <dbl>  <dbl>
+#>  1     1 175.    9.22     0  0.864  5.58  -2.49  -4.58  -2.22  -5.77   -7.38 
+#>  2     2  51.4   4.07     1  3.97   0.563 -1.88  -5.91  -4.88  -3.98   -1.80 
+#>  3     3  57.4   3.67     1 -3.31  -0.249 -1.47  -0.337  2.50  -4.96   -0.888
+#>  4     4   4.85  3.27     0 -5.07  -3.71  -0.419 -1.84  -3.11  -0.662   0.492
+#>  5     5  98.2   7.09     1 -1.24   3.01  -1.35  -5.48  -1.32   0.410  -1.66 
+#>  6     6 171.   12.4      1  2.81   3.71   3.79  -1.13   0.975  4.29    4.29 
+#>  7     7 187.   15.5      1 -1.43   6.47   5.36   1.81   2.97  -0.472   0.580
+#>  8     8 131.    3.71     0  1.07  -0.824 -1.11  -2.99  -1.73  -8.31   -3.22 
+#>  9     9  85.1   2.64     0  1.61  -1.60   0.470  0.377  1.03  -0.0646 -3.84 
+#> 10    10 256.    9.71     0 -1.53  -0.207  3.47   3.52   2.03   0.945   1.39 
 #> # ℹ 190 more rows
 #> # ℹ 3 more variables: z8 <dbl>, z9 <dbl>, z10 <dbl>
 ```
@@ -143,23 +141,23 @@ results
 #> # A tibble: 25 × 8
 #>    lambda_1 lambda_2 full_fit          CV_MAE_y CV_MAE_y_SE CV_MAE_x CV_MAE_x_SE
 #>       <dbl>    <dbl> <list>               <dbl>       <dbl>    <dbl>       <dbl>
-#>  1     0.01     0.01 <named list [13]>     35.0        1.74     3.22       0.176
-#>  2     0.01     0.05 <named list [13]>     35.1        1.61     3.17       0.148
-#>  3     0.01     0.1  <named list [13]>     35.2        1.63     3.13       0.139
-#>  4     0.01     0.5  <named list [13]>     36.2        1.69     3.15       0.133
-#>  5     0.01     1    <named list [13]>     38.6        1.93     3.22       0.220
-#>  6     0.05     0.01 <named list [13]>     35.7        2.08     3.21       0.176
-#>  7     0.05     0.05 <named list [13]>     35.9        1.99     3.17       0.143
-#>  8     0.05     0.1  <named list [13]>     36.2        2.13     3.14       0.129
-#>  9     0.05     0.5  <named list [13]>     38.0        2.18     3.14       0.132
-#> 10     0.05     1    <named list [13]>     41.2        2.37     3.20       0.225
+#>  1     0.01     0.01 <named list [13]>     35.0        1.73     3.23       0.182
+#>  2     0.01     0.05 <named list [13]>     35.0        1.75     3.20       0.181
+#>  3     0.01     0.1  <named list [13]>     35.1        1.86     3.17       0.173
+#>  4     0.01     0.5  <named list [13]>     36.3        2.07     3.20       0.154
+#>  5     0.01     1    <named list [13]>     39.0        1.72     3.28       0.230
+#>  6     0.05     0.01 <named list [13]>     35.6        2.12     3.21       0.179
+#>  7     0.05     0.05 <named list [13]>     35.6        2.29     3.18       0.172
+#>  8     0.05     0.1  <named list [13]>     35.7        2.49     3.16       0.168
+#>  9     0.05     0.5  <named list [13]>     37.8        2.55     3.17       0.151
+#> 10     0.05     1    <named list [13]>     41.5        2.18     3.25       0.233
 #> # ℹ 15 more rows
 #> # ℹ 1 more variable: time <drtn>
 ```
 
 ## Identify the best model
 
-The best $`(\lambda_1, \lambda_2)`$ pair is chosen by minimising the
+The best \\(\lambda_1, \lambda_2)\\ pair is chosen by minimising the
 cross-validated mean absolute error for the response, `CV_MAE_y`.
 
 ``` r
@@ -187,16 +185,16 @@ tibble(
 #> # A tibble: 10 × 3
 #>    feature true_beta estimated_beta
 #>    <chr>       <dbl>          <dbl>
-#>  1 z1              4           3.62
-#>  2 z2              4           3.58
-#>  3 z3              2           2.02
+#>  1 z1              4           3.53
+#>  2 z2              4           3.77
+#>  3 z3              2           1.89
 #>  4 z4              0           0   
 #>  5 z5              0           0   
 #>  6 z6              0           0   
 #>  7 z7              0           0   
 #>  8 z8              0           0   
-#>  9 z9             -2          -2.38
-#> 10 z10            -4          -3.32
+#>  9 z9             -2          -2.42
+#> 10 z10            -4          -3.27
 
 # Censored-covariate coefficients
 tibble(
@@ -207,16 +205,16 @@ tibble(
 #> # A tibble: 10 × 3
 #>    feature true_gamma estimated_gamma
 #>    <chr>        <dbl>           <dbl>
-#>  1 z1            0            0.00302
-#>  2 z2            0.04         0.0335 
-#>  3 z3            0.04         0.0729 
-#>  4 z4            0.02         0.00364
-#>  5 z5            0.02         0.0343 
-#>  6 z6            0           -0.0231 
-#>  7 z7            0            0.0167 
-#>  8 z8            0           -0.0195 
-#>  9 z9            0            0.00402
-#> 10 z10           0           -0.00418
+#>  1 z1            0           -0.00367
+#>  2 z2            0.04         0.0541 
+#>  3 z3            0.04         0.0398 
+#>  4 z4            0.02         0.0441 
+#>  5 z5            0.02        -0.0083 
+#>  6 z6            0            0.0180 
+#>  7 z7            0           -0.0195 
+#>  8 z8            0            0.00905
+#>  9 z9            0           -0.0135 
+#> 10 z10           0            0.00144
 ```
 
 ## Visualise: Cross-validation heatmap
@@ -270,8 +268,8 @@ varies.](ccreds-workflow_files/figure-html/coef-paths-gamma-1.png)
 ## Visualise: Predictive densities
 
 [`plot_density()`](https://rajan-shankar.github.io/ccreds/reference/plot_density.md)
-displays the joint or conditional density of $`(y, x)`$ for a given
-feature vector $`\mathbf{z}`$.
+displays the joint or conditional density of \\(y, x)\\ for a given
+feature vector \\\mathbf{z}\\.
 
 ``` r
 
@@ -282,8 +280,8 @@ plot_density(fit, z = z_new)
 ![Joint density contour plot of y and
 x.](ccreds-workflow_files/figure-html/density-joint-1.png)
 
-Supplying `y_given` shows the marginal density $`f(x \mid \mathbf{z})`$
-alongside the conditional density $`f(x \mid \mathbf{z}, y)`$:
+Supplying `y_given` shows the marginal density \\f(x \mid \mathbf{z})\\
+alongside the conditional density \\f(x \mid \mathbf{z}, y)\\:
 
 ``` r
 
@@ -301,7 +299,7 @@ The typical `ccreds` workflow is:
     `z1`, …, `zp`.
 2.  **Fit** with
     [`ccreds()`](https://rajan-shankar.github.io/ccreds/reference/ccreds.md)
-    over a grid of $`(\lambda_1, \lambda_2)`$ values.
+    over a grid of \\(\lambda_1, \lambda_2)\\ values.
 3.  **Select** the best model by minimising `CV_MAE_y`.
 4.  **Visualise** with
     [`plot_cv()`](https://rajan-shankar.github.io/ccreds/reference/plot_cv.md),

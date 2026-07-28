@@ -6,7 +6,7 @@ censored-covariate regression models with two separate L1 penalties —
 one for selecting features associated with the response variable and one
 for selecting features associated with the censored covariate. Tuning
 parameters are selected via cross-validation. Functions for producing
-visual diagnostics, such as cross-validation heat maps, coefficient
+visual diagnostics such as cross-validation heat maps, coefficient
 paths, and plotting estimated densities, are provided.
 
 ## Installation
@@ -92,7 +92,7 @@ Fit censored-covariate regression models with cross-validated penalty
 selection.
 
 - [`ccreds()`](https://rajan-shankar.github.io/ccreds/reference/ccreds.md)
-  : Feature Selection in Censored-Covariate Regression Models
+  : Censored-Covariate Regression with Dual Selection
 
 ## Visualisation
 
@@ -109,7 +109,7 @@ densities.
 ## Package
 
 - [`ccreds-package`](https://rajan-shankar.github.io/ccreds/reference/ccreds-package.md)
-  : ccreds: Feature Selection in Censored-Covariate Regression Models
+  : ccreds: Censored-Covariate Regression with Dual Selection
 
 # Articles
 
