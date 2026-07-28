@@ -2,7 +2,7 @@
 % Please edit documentation in R/ccreds.R
 \name{ccreds}
 \alias{ccreds}
-\title{Feature Selection in Censored-Covariate Regression Models}
+\title{Censored-Covariate Regression with Dual Selection}
 \usage{
 ccreds(
   data,

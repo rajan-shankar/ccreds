@@ -1,4 +1,4 @@
-#' Feature Selection in Censored-Covariate Regression Models
+#' Censored-Covariate Regression with Dual Selection
 #'
 #' Fits penalised censored-covariate regression models over a grid of
 #' tuning parameters \eqn{(\lambda_1, \lambda_2)} using cross-validation

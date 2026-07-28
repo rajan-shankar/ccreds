@@ -3,7 +3,7 @@
 <!-- badges: start -->
 <!-- badges: end -->
 
-**ccreds** is an R package for performing Censored-Covariate Regression with Dual Selection. ccreds allows users to fit penalised censored-covariate regression models with two separate L1 penalties — one for selecting features associated with the response variable and one for selecting features associated with the censored covariate. Tuning parameters are selected via cross-validation. Functions for producing visual diagnostics, such as cross-validation heat maps, coefficient paths, and plotting estimated densities, are provided.
+**ccreds** is an R package for performing Censored-Covariate Regression with Dual Selection. ccreds allows users to fit penalised censored-covariate regression models with two separate L1 penalties --- one for selecting features associated with the response variable and one for selecting features associated with the censored covariate. Tuning parameters are selected via cross-validation. Functions for producing visual diagnostics such as cross-validation heat maps, coefficient paths, and plotting estimated densities, are provided.
 
 ## Installation
 
