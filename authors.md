@@ -3,12 +3,13 @@
 ## Authors
 
 - **Rajan Shankar**. Author, maintainer.
+  [](https://orcid.org/0009-0001-9379-6727)
 
-- **Tanya Garcia**. Author.
+- **Tanya Garcia**. Author. [](https://orcid.org/0000-0001-9900-4025)
 
-- **John Ormerod**. Author.
+- **John Ormerod**. Author. [](https://orcid.org/0000-0002-4650-7507)
 
-- **Garth Tarr**. Author.
+- **Garth Tarr**. Author. [](https://orcid.org/0000-0002-6605-7478)
 
 ## Citation
 
