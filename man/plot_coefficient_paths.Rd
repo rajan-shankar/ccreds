@@ -17,9 +17,11 @@ plot_coefficient_paths(
 
 \item{component}{Either \code{"beta"} or \code{"gamma"}.}
 
-\item{lambda_fixed}{The value of the held-fixed penalty. If
-\code{NULL} (default), uses the value at the minimum \code{CV_MAE_y}
-row.}
+\item{lambda_fixed}{The value of the other penalty to hold
+constant while the plotted penalty varies. When
+\code{component = "beta"}, this fixes \eqn{\lambda_2}; when
+\code{component = "gamma"}, this fixes \eqn{\lambda_1}. If \code{NULL}
+(default), uses the value from the minimum \code{CV_MAE_y} model.}
 
 \item{feature_names}{Optional character vector of length
 \eqn{p} giving display names for the features. If \code{NULL},

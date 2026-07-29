@@ -16,9 +16,7 @@ knitr::opts_chunk$set(
 )
 ```
 
-This vignette walks through a complete `ccreds` workflow: simulating
-censored-covariate regression data, fitting the model with
-cross-validated penalty selection, and visualising the results.
+This vignette walks through a complete `ccreds` workflow: simulating censored-covariate regression data, fitting the model with cross-validated penalty selection, and visualising the results.
 
 ## Setup
 
@@ -31,7 +29,7 @@ library(dplyr)
 ## Simulate data
 
 We generate data from the censored-covariate regression model with
-$n = 200$ observations and $p = 10$ features.
+$n = 200$ observations and $p = 30$ features.
 
 **Response-variable model:**
 $$y_i = \beta_0 + \alpha x_i + \pmb{\beta}^\top \mathbf{z}_i + \varepsilon_i, \quad \varepsilon_i \sim N(0, \sigma^2)$$
@@ -41,27 +39,27 @@ $$X_i \mid \mathbf{z}_i \sim \chi^2(\mu_i), \quad \mu_i = \exp(\gamma_0 + \pmb{\
 
 We set $\pmb{\beta}$ and $\pmb{\gamma}$ to be sparse with
 partially overlapping support, so that some features affect only the
-response, some affect only the censored covariate, and some affect both.
+response, some affect only the censored covariate, and some affect both. We set the censoring rate to be approximately 50\%.
 
 ```{r simulate}
 set.seed(8371)
 
 n <- 200
-p <- 10
+p <- 30
 
 # Correlated features (AR(0.5) structure)
 rho <- 0.5
-Sigma <- 9 * toeplitz(rho^(0:(p - 1)))
+Sigma <- 9*toeplitz(rho^(0:(p - 1)))
 z <- mvrnorm(n = n, mu = rep(0, p), Sigma = Sigma)
 
 # True parameters
 beta_0 <- 5
 alpha <- 10
-beta <- c(4, 4, 2, 0, 0, 0, 0, 0, -2, -4)
+beta <- c(4, 4, 2, rep(0, p-5), -2, -4)
 sigma_sq <- 100
 
 gamma_0 <- 2
-gamma <- c(0, 0.04, 0.04, 0.02, 0.02, 0, 0, 0, 0, 0)
+gamma <- c(0.04, 0.04, 0.02, 0.02, rep(0, p-4))
 
 # Generate the censored covariate x
 x_mean <- exp(cbind(1, z) %*% c(gamma_0, gamma)) |> drop()
@@ -100,17 +98,17 @@ dat
 ```
 
 ```{r cens-rate}
+# Censoring rate should be approximately 50%
 mean(dat$d == 0)
 ```
 
 ## Fit the model
 
-We search over a small grid of penalty parameters. In practice you would
-use a finer grid and potentially run in parallel with `cores > 1`.
+We search over a small grid of penalty parameters. In practice you would use a finer grid and potentially run in parallel with `cores > 1`.
 
 ```{r fit, message = FALSE}
-lambda_1s <- c(0.01, 0.05, 0.1, 0.5, 1)
-lambda_2s <- c(0.01, 0.05, 0.1, 0.5, 1)
+lambda_1s <- c(0.0001, 0.001, 0.01, 0.1, 1)
+lambda_2s <- c(0.0001, 0.001, 0.01, 0.1, 1)
 
 results <- ccreds(
   data = dat,
@@ -120,21 +118,19 @@ results <- ccreds(
 )
 
 results
+
+round(results$time, digits = 2)
 ```
 
 ## Identify the best model
 
-Use `extract_fit()` to retrieve the fitted model. The default
-`rule = "min"` selects the $(\lambda_1, \lambda_2)$ pair that
-minimises `CV_MAE_y`. The `rule = "1se"` alternative selects the most
-parsimonious model whose `CV_MAE_y` is within one standard error of
-the minimum.
+Use `extract_fit()` to retrieve the fitted model. The default `rule = "min"` selects the $(\lambda_1, \lambda_2)$ pair that minimises `CV_MAE_y`. The `rule = "1se"` alternative selects the most parsimonious model whose `CV_MAE_y` is within one standard error of the minimum.
 
 ```{r best-model}
 fit <- extract_fit(results)
 ```
 
-We can inspect the estimated coefficients and compare them to the truth:
+We can inspect the first few estimated coefficients and compare them to the truth:
 
 ```{r coefficients}
 # Response-model coefficients
@@ -161,13 +157,6 @@ The white cross marks the optimal pair.
 plot_cv(results)
 ```
 
-You can also plot `CV_MAE_x` (prediction error for the censored
-covariate among complete observations):
-
-```{r plot-cv-x, fig.alt = "Heatmap of cross-validated MAE for x."}
-plot_cv(results, metric = "CV_MAE_x")
-```
-
 ## Visualise: Coefficient paths
 
 `plot_coefficient_paths()` shows how the estimated coefficients change
@@ -189,7 +178,7 @@ $(y, x)$ for a given feature vector $\mathbf{z}$.
 
 ```{r density-joint, fig.alt = "Joint density contour plot of y and x."}
 z_new <- rep(0, p)
-plot_density(fit, z = z_new)
+plot_density(fit, z = z_new, x_range = c(0,20), y_range = c(0, 200))
 ```
 
 Supplying `y_given` shows the marginal density $f(x \mid \mathbf{z})$

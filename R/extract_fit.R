@@ -82,17 +82,12 @@ extract_fit <- function(results, rule = c("min", "1se")) {
     \(f) f$beta_selected + f$gamma_selected,
     numeric(1)
   )
+  total_penalty <- eligible$lambda_1 + eligible$lambda_2
 
-  most_parsimonious <- which(total_selected == min(total_selected))
+  # Sort by: fewest selected features, then lowest CV_MAE_y, then
 
-  if (length(most_parsimonious) > 1) {
-    # Break ties: highest total penalty = most regularisation
-    penalty_sums <- eligible$lambda_1[most_parsimonious] +
-      eligible$lambda_2[most_parsimonious]
-    most_parsimonious <- most_parsimonious[which.max(penalty_sums)]
-  } else {
-    most_parsimonious <- most_parsimonious[[1]]
-  }
+  # highest total penalty (most regularisation)
+  ord <- order(total_selected, eligible$CV_MAE_y, -total_penalty)
 
-  eligible$full_fit[[most_parsimonious]]
+  eligible$full_fit[[ord[1]]]
 }

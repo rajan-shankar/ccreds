@@ -1,0 +1,126 @@
+---
+title: "Extracting min-CV and 1-SE models and plotting"
+format: html
+---
+
+# Plot results
+
+Themes
+
+```{r}
+theme_set(theme_bw(base_size = 12))
+library(patchwork)
+```
+
+Pre-processing
+
+```{r}
+scores = res_tune |> 
+  # slice(-185, -356) |> 
+  unnest(model) |> 
+  mutate(beta_sel = map_dbl(full_fit, ~ .$beta_sel),
+         gamma_sel = map_dbl(full_fit, ~ .$gamma_sel)) |> 
+  group_by(setting, sample) |> 
+  mutate(within_1SE = ifelse(
+    CV_MAE_y <= min(CV_MAE_y) + CV_MAE_y_SE[which.min(CV_MAE_y)],
+    "yes", "no"
+  )) |> 
+  mutate(sel_L1_score = beta_sel + gamma_sel,
+         sel_L2_score = beta_sel^2 + gamma_sel^2,
+         total_penalty = lambda_1 + lambda_2) |> 
+  
+  arrange(CV_MAE_y, desc(total_penalty)) |> 
+  mutate(min_CV_MAE_y = ifelse(row_number() == 1, "yes", "no")) |> 
+  
+  arrange(CV_MAE_x, desc(total_penalty)) |> 
+  mutate(min_CV_MAE_x = ifelse(row_number() == 1, "yes", "no")) |> 
+  
+  arrange(desc(within_1SE), sel_L1_score, CV_MAE_y, desc(total_penalty)) |>
+  mutate(min_L1_score = ifelse(row_number() == 1, "yes", "no")) |> 
+  
+  arrange(desc(within_1SE), sel_L2_score, CV_MAE_y, desc(total_penalty)) |>
+  mutate(min_L2_score = ifelse(row_number() == 1, "yes", "no")) |> 
+  
+  ungroup() |> 
+  select(setting, sample, lambda_1, lambda_2, full_fit, CV_MAE_y, within_1SE, beta_sel, gamma_sel, sel_L1_score, sel_L2_score, min_CV_MAE_y, min_CV_MAE_x, min_L1_score, min_L2_score, total_penalty) |> 
+  arrange(setting, sample, lambda_1, lambda_2)
+
+# Are there any cases where min_L1_score model is different to min_L2_score model?
+# scores |> 
+#   filter(min_L1_score != min_L2_score) |> view()
+
+# More pre-processing: Keep only the best model for each 'method' (i.e. scoring metric)
+best_scores = scores |> 
+  filter(min_CV_MAE_y == "yes" | min_L1_score == "yes" | min_L2_score == "yes" | min_CV_MAE_x == "yes") |> 
+  pivot_longer(c(min_CV_MAE_y, min_L1_score, min_L2_score, min_CV_MAE_x), 
+               names_to = "score", values_to = "value") |> 
+  filter(value == "yes")
+
+# Memory-friendly version of scores. The full fits are only required for computing parameter accuracy RMSEs, which I only need to do using best_scores.
+scores_no_fits = scores |> 
+  select(-full_fit)
+
+# Not interested in L2 score anymore
+best_scores = best_scores |> 
+  filter(score != "min_L2_score")
+```
+
+Fit post-lasso models
+
+```{r}
+active_coefs_minL1 = best_scores |> 
+  filter(score == "min_L1_score") |> 
+  mutate(active_beta = map(full_fit, 
+                           ~ unname(which(.$beta[3:length(.$beta)] != 0))),
+         active_gamma = map(full_fit, 
+                            ~ unname(which(.$gamma[2:length(.$gamma)] != 0)))
+         ) |> 
+  select(setting, sample, active_beta, active_gamma)
+  
+res_post_lasso_redo = res_tune_redo |> 
+  select(-model) |> 
+  left_join(active_coefs_minL1, by = join_by(setting, sample)) |> 
+  mutate(
+    model = pmap(
+      list(data_set, active_beta, active_gamma),
+      function(data_set, active_beta, active_gamma) {
+        fit_model(
+          lambda_1 = 1000,
+          lambda_2 = 1000,
+          init_beta = c(0, 1, rep(0, p)),
+          init_sigma_sq = 1,
+          init_gamma = c(0, rep(0, p)),
+          force_active_beta = active_beta,
+          force_active_gamma = active_gamma,
+          data = data_set
+        )
+      },
+      .progress = TRUE
+    )
+  ) |> 
+  select(-data_set)
+
+```
+
+Final best_scores
+
+```{r}
+# Add oracle model and post-lasso model
+best_scores = best_scores |> 
+  bind_rows(
+    res_oracle |> 
+      # slice(-185, -356) |> 
+      select(setting, sample, model) |> 
+      rename(full_fit = model) |> 
+      mutate(score = "oracle")
+  ) |> 
+  bind_rows(
+    res_post_lasso |>
+      # slice(-185, -356) |> 
+      select(setting, sample, model) |>
+      rename(full_fit = model) |>
+      mutate(score = "post_lasso")
+  ) |>
+  arrange(setting, sample, score)
+```
+

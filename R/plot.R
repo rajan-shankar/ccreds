@@ -35,7 +35,7 @@ plot_cv <- function(results, metric = "CV_MAE_y") {
     ggplot2::geom_tile(ggplot2::aes(fill = .data[[metric]])) +
     ggplot2::geom_point(
       data = best,
-      shape = 4, size = 3, stroke = 1.2, colour = "white"
+      shape = 4, size = 3, stroke = 1.2, colour = "red"
     ) +
     ggplot2::scale_x_log10(expand = c(0, 0)) +
     ggplot2::scale_y_log10(expand = c(0, 0)) +
@@ -44,7 +44,8 @@ plot_cv <- function(results, metric = "CV_MAE_y") {
       x = lambda_1_label,
       y = lambda_2_label,
       fill = metric
-    )
+    ) +
+    ggplot2::theme_bw()
 }
 
 
@@ -59,9 +60,11 @@ plot_cv <- function(results, metric = "CV_MAE_y") {
 #'
 #' @param results A tibble returned by [ccreds()].
 #' @param component Either `"beta"` or `"gamma"`.
-#' @param lambda_fixed The value of the held-fixed penalty. If
-#'   `NULL` (default), uses the value at the minimum `CV_MAE_y`
-#'   row.
+#' @param lambda_fixed The value of the other penalty to hold
+#'   constant while the plotted penalty varies. When
+#'   `component = "beta"`, this fixes \eqn{\lambda_2}; when
+#'   `component = "gamma"`, this fixes \eqn{\lambda_1}. If `NULL`
+#'   (default), uses the value from the minimum `CV_MAE_y` model.
 #' @param feature_names Optional character vector of length
 #'   \eqn{p} giving display names for the features. If `NULL`,
 #'   uses `z1`, `z2`, etc.
@@ -158,13 +161,15 @@ plot_coefficient_paths <- function(results,
     names_to = "feature",
     values_to = "value"
   )
-  path_long$feature <- factor(path_long$feature, levels = feature_names)
-
   # Identify which features are selected at the best lambda
   best_fit <- best_row$full_fit[[1]]
   best_coefs <- best_fit[[component]]
   selected <- feature_names[best_coefs != 0]
   path_long$selected <- path_long$feature %in% selected
+
+  # Order legend by coefficient value (highest to lowest)
+  feature_order <- feature_names[order(best_coefs, decreasing = TRUE)]
+  path_long$feature <- factor(path_long$feature, levels = feature_order)
 
   lambda_label_text <- lambda_label(varying_col)
 
@@ -178,38 +183,41 @@ plot_coefficient_paths <- function(results,
     )
   )
 
-  if (highlight) {
-    plt <- plt +
-      ggplot2::geom_line(
-        data = path_long[!path_long$selected, ],
-        alpha = 0.3, linewidth = 0.6
-      ) +
-      ggplot2::geom_line(
-        data = path_long[path_long$selected, ],
-        linewidth = 0.8
-      ) +
-      ggplot2::geom_vline(
-        xintercept = best_lambda,
-        linetype = "dashed"
-      )
-  } else {
-    plt <- plt +
-      ggplot2::geom_line(linewidth = 0.7)
-  }
-
   component_label <- ifelse(
     component == "beta",
     expression(hat(beta)),
     expression(hat(gamma))
   )
 
+  if (highlight) {
+    # Unselected lines: grey and excluded from legend
+    plt <- plt +
+      ggplot2::geom_line(
+        data = path_long[!path_long$selected, ],
+        colour = "grey80", linewidth = 0.6,
+        show.legend = FALSE
+      ) +
+      ggplot2::geom_line(
+        data = path_long[path_long$selected, ],
+        linewidth = 0.8
+      )
+  } else {
+    plt <- plt +
+      ggplot2::geom_line(linewidth = 0.7)
+  }
+
   plt +
+    ggplot2::geom_vline(
+      xintercept = best_lambda,
+      linetype = "dashed"
+    ) +
     ggplot2::scale_x_log10() +
     ggplot2::labs(
       x = lambda_label_text,
       y = component_label,
       colour = "Feature"
-    )
+    ) +
+    ggplot2::theme_bw()
 }
 
 
@@ -263,17 +271,17 @@ plot_density <- function(fit,
   mu_x <- exp(fit$gamma_0 + sum(fit$gamma * z))
   mu_y <- fit$beta_0 + fit$alpha * mu_x + sum(fit$beta * z)
   sd_y <- sqrt(fit$sigma_sq)
-
+  
   if (is.null(x_range)) {
     x_range <- c(
       max(0.01, qchisq(0.001, df = mu_x)),
       qchisq(0.999, df = mu_x)
     )
-  }
+    }
   if (is.null(y_range)) {
     y_range <- c(mu_y - 4 * sd_y, mu_y + 4 * sd_y)
   }
-
+  
   x_seq <- seq(x_range[1], x_range[2], length.out = n_grid)
   y_seq <- seq(y_range[1], y_range[2], length.out = n_grid)
 
@@ -347,7 +355,8 @@ plot_density <- function(fit,
         labels = c("conditional" = cond_label, "marginal" = marg_label),
         values = c("conditional" = "orange", "marginal" = "black")
       ) +
-      ggplot2::labs(x = "x", y = "Density", colour = NULL, fill = NULL)
+      ggplot2::labs(x = "x", y = "Density", colour = NULL, fill = NULL) +
+      ggplot2::theme_bw()
   }
 }
 

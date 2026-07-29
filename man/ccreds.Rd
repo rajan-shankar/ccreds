@@ -6,8 +6,8 @@
 \usage{
 ccreds(
   data,
-  lambda_1s,
-  lambda_2s,
+  lambda_1s = 10^seq(-4, 0, length.out = 9),
+  lambda_2s = 10^seq(-4, 0, length.out = 9),
   force_active_beta = integer(0),
   force_active_gamma = integer(0),
   k = 5,
