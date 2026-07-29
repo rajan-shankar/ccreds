@@ -51,7 +51,7 @@ plot_cv <- function(results, metric = "CV_MAE_y") {
 #' Plot coefficient paths
 #'
 #' Shows how the estimated feature coefficients
-#' \eqn{\boldsymbol{\beta}} or \eqn{\boldsymbol{\gamma}} change
+#' \eqn{\pmb{\beta}} or \eqn{\pmb{\gamma}} change
 #' as the corresponding penalty parameter varies. For
 #' `component = "beta"`, the plot varies \eqn{\lambda_1} while
 #' holding \eqn{\lambda_2} fixed, and vice versa for

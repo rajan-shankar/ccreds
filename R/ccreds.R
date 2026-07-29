@@ -11,17 +11,17 @@
 #' The censored-covariate regression model consists of two components:
 #'
 #' \strong{Response-variable model:}
-#' \deqn{y_i = \beta_0 + \alpha x_i + \boldsymbol{\beta}^\top
+#' \deqn{y_i = \beta_0 + \alpha x_i + \pmb{\beta}^\top
 #'   \mathbf{z}_i + \varepsilon_i, \quad \varepsilon_i \sim N(0,
 #'   \sigma^2)}
 #'
 #' \strong{Censored-covariate model:}
 #' \deqn{X_i \mid \mathbf{z}_i \sim \chi^2(\mu_i), \quad \mu_i =
-#'   \exp(\gamma_0 + \boldsymbol{\gamma}^\top \mathbf{z}_i)}
+#'   \exp(\gamma_0 + \pmb{\gamma}^\top \mathbf{z}_i)}
 #'
 #' Here \eqn{\beta_0} and \eqn{\gamma_0} are intercepts, \eqn{\alpha}
 #' is the coefficient of the censored covariate \eqn{x}, and
-#' \eqn{\boldsymbol{\beta}} and \eqn{\boldsymbol{\gamma}} are feature
+#' \eqn{\pmb{\beta}} and \eqn{\pmb{\gamma}} are feature
 #' coefficient vectors subject to \eqn{L_1} penalisation.
 #'
 #' @param data A data frame with columns in this order: `case` (integer
@@ -29,14 +29,14 @@
 #'   `d` (censoring indicator: 1 = observed, 0 = censored), `z1`,
 #'   `z2`, ..., `zp` (features).
 #' @param lambda_1s Numeric vector of candidate values for
-#'   \eqn{\lambda_1}, the penalty on \eqn{\boldsymbol{\beta}}.
+#'   \eqn{\lambda_1}, the penalty on \eqn{\pmb{\beta}}.
 #' @param lambda_2s Numeric vector of candidate values for
-#'   \eqn{\lambda_2}, the penalty on \eqn{\boldsymbol{\gamma}}.
+#'   \eqn{\lambda_2}, the penalty on \eqn{\pmb{\gamma}}.
 #' @param force_active_beta Integer vector of feature indices (referring
 #'   to z column numbers) that should not be penalised in
-#'   \eqn{\boldsymbol{\beta}}. Default is `integer(0)`.
+#'   \eqn{\pmb{\beta}}. Default is `integer(0)`.
 #' @param force_active_gamma Integer vector of feature indices that
-#'   should not be penalised in \eqn{\boldsymbol{\gamma}}. Default is
+#'   should not be penalised in \eqn{\pmb{\gamma}}. Default is
 #'   `integer(0)`.
 #' @param k Number of cross-validation folds. Default is 5.
 #' @param cores Number of parallel workers. If greater than 1, uses
@@ -54,16 +54,16 @@
 #'         \item{alpha}{Coefficient \eqn{\alpha} of the censored
 #'           covariate \eqn{x}.}
 #'         \item{beta}{Feature coefficient vector
-#'           \eqn{\boldsymbol{\beta}} of length \eqn{p}.}
+#'           \eqn{\pmb{\beta}} of length \eqn{p}.}
 #'         \item{sigma_sq}{Error variance \eqn{\sigma^2}.}
 #'         \item{gamma_0}{Intercept \eqn{\gamma_0}.}
 #'         \item{gamma}{Feature coefficient vector
-#'           \eqn{\boldsymbol{\gamma}} of length \eqn{p}.}
+#'           \eqn{\pmb{\gamma}} of length \eqn{p}.}
 #'         \item{beta_selected}{Number of non-zero entries in
-#'           \eqn{\hat{\boldsymbol{\beta}}} (excluding forced-active
+#'           \eqn{\hat{\pmb{\beta}}} (excluding forced-active
 #'           features).}
 #'         \item{gamma_selected}{Number of non-zero entries in
-#'           \eqn{\hat{\boldsymbol{\gamma}}} (excluding forced-active
+#'           \eqn{\hat{\pmb{\gamma}}} (excluding forced-active
 #'           features).}
 #'         \item{iterations}{Number of EM iterations until
 #'           convergence.}

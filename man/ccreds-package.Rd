@@ -5,17 +5,28 @@
 \alias{ccreds-package}
 \title{ccreds: Censored-Covariate Regression with Dual Selection}
 \description{
+\if{html}{\figure{logo.png}{options: style='float: right' alt='logo' width='120'}}
+
 Implements a penalised observed-data log-likelihood method for feature selection in censored-covariate regression models. Uses two separate L1 penalties to select features associated with the response variable and features associated with the censored covariate, via an Expectation-Minimisation (EM) algorithm. Tuning parameters are chosen by cross-validation.
 }
+\seealso{
+Useful links:
+\itemize{
+  \item \url{https://rajan-shankar.github.io/ccreds/}
+  \item \url{https://github.com/rajan-shankar/ccreds}
+  \item Report bugs at \url{https://github.com/rajan-shankar/ccreds/issues}
+}
+
+}
 \author{
-\strong{Maintainer}: Rajan Shankar \email{rajan.shankar@sydney.edu.au}
+\strong{Maintainer}: Rajan Shankar \email{rajan.shankar@sydney.edu.au} (\href{https://orcid.org/0009-0001-9379-6727}{ORCID})
 
 Authors:
 \itemize{
-  \item Rajan Shankar \email{rajan.shankar@sydney.edu.au}
-  \item Tanya Garcia
-  \item John Ormerod
-  \item Garth Tarr
+  \item Rajan Shankar \email{rajan.shankar@sydney.edu.au} (\href{https://orcid.org/0009-0001-9379-6727}{ORCID})
+  \item Tanya Garcia (\href{https://orcid.org/0000-0001-9900-4025}{ORCID})
+  \item John Ormerod (\href{https://orcid.org/0000-0002-4650-7507}{ORCID})
+  \item Garth Tarr (\href{https://orcid.org/0000-0002-6605-7478}{ORCID})
 }
 
 }

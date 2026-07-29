@@ -3,8 +3,6 @@ url: https://rajan-shankar.github.io/ccreds/
 template:
   bootstrap: 5
   math-rendering: mathjax
-  includes:
-    in_header: pkgdown/mathjax-config.html
 
 reference:
   - title: Model fitting

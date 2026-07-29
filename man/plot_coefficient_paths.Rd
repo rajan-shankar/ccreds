@@ -34,7 +34,7 @@ A \code{ggplot} object.
 }
 \description{
 Shows how the estimated feature coefficients
-\eqn{\boldsymbol{\beta}} or \eqn{\boldsymbol{\gamma}} change
+\eqn{\pmb{\beta}} or \eqn{\pmb{\gamma}} change
 as the corresponding penalty parameter varies. For
 \code{component = "beta"}, the plot varies \eqn{\lambda_1} while
 holding \eqn{\lambda_2} fixed, and vice versa for

@@ -34,12 +34,12 @@ We generate data from the censored-covariate regression model with
 $n = 200$ observations and $p = 10$ features.
 
 **Response-variable model:**
-$$y_i = \beta_0 + \alpha x_i + \boldsymbol{\beta}^\top \mathbf{z}_i + \varepsilon_i, \quad \varepsilon_i \sim N(0, \sigma^2)$$
+$$y_i = \beta_0 + \alpha x_i + \pmb{\beta}^\top \mathbf{z}_i + \varepsilon_i, \quad \varepsilon_i \sim N(0, \sigma^2)$$
 
 **Censored-covariate model:**
-$$X_i \mid \mathbf{z}_i \sim \chi^2(\mu_i), \quad \mu_i = \exp(\gamma_0 + \boldsymbol{\gamma}^\top \mathbf{z}_i)$$
+$$X_i \mid \mathbf{z}_i \sim \chi^2(\mu_i), \quad \mu_i = \exp(\gamma_0 + \pmb{\gamma}^\top \mathbf{z}_i)$$
 
-We set $\boldsymbol{\beta}$ and $\boldsymbol{\gamma}$ to be sparse with
+We set $\pmb{\beta}$ and $\pmb{\gamma}$ to be sparse with
 partially overlapping support, so that some features affect only the
 response, some affect only the censored covariate, and some affect both.
 
