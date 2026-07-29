@@ -27,7 +27,7 @@ library(dplyr)
 ## Simulate data
 
 We generate data from the censored-covariate regression model with \\n =
-200\\ observations and \\p = 10\\ features.
+200\\ observations and \\p = 30\\ features.
 
 **Response-variable model:** \\y_i = \beta_0 + \alpha x_i +
 \pmb{\beta}^\top \mathbf{z}\_i + \varepsilon_i, \quad \varepsilon_i \sim
@@ -39,28 +39,29 @@ N(0, \sigma^2)\\
 
 We set \\\pmb{\beta}\\ and \\\pmb{\gamma}\\ to be sparse with partially
 overlapping support, so that some features affect only the response,
-some affect only the censored covariate, and some affect both.
+some affect only the censored covariate, and some affect both. We set
+the censoring rate to be approximately 50%.
 
 ``` r
 
 set.seed(8371)
 
 n <- 200
-p <- 10
+p <- 30
 
 # Correlated features (AR(0.5) structure)
 rho <- 0.5
-Sigma <- 9 * toeplitz(rho^(0:(p - 1)))
+Sigma <- 9*toeplitz(rho^(0:(p - 1)))
 z <- mvrnorm(n = n, mu = rep(0, p), Sigma = Sigma)
 
 # True parameters
 beta_0 <- 5
 alpha <- 10
-beta <- c(4, 4, 2, 0, 0, 0, 0, 0, -2, -4)
+beta <- c(4, 4, 2, rep(0, p-5), -2, -4)
 sigma_sq <- 100
 
 gamma_0 <- 2
-gamma <- c(0, 0.04, 0.04, 0.02, 0.02, 0, 0, 0, 0, 0)
+gamma <- c(0.04, 0.04, 0.02, 0.02, rep(0, p-4))
 
 # Generate the censored covariate x
 x_mean <- exp(cbind(1, z) %*% c(gamma_0, gamma)) |> drop()
@@ -96,27 +97,31 @@ dat <- tibble(
   bind_cols(z_df)
 
 dat
-#> # A tibble: 200 × 14
-#>     case      y     w     d     z1     z2     z3      z4    z5     z6     z7
-#>    <int>  <dbl> <dbl> <dbl>  <dbl>  <dbl>  <dbl>   <dbl> <dbl>  <dbl>  <dbl>
-#>  1     1 176.    9.32     0  1.07   5.09  -1.76  -5.49   -1.21 -6.77  -6.46 
-#>  2     2  50.9   4.03     1  3.85   0.857 -2.32  -5.36   -5.48 -3.39  -2.34 
-#>  3     3  54.6   3.44     1 -4.05   1.53  -4.13   2.95   -1.12 -1.33  -4.18 
-#>  4     4   3.39  3.17     0 -5.46  -2.77  -1.82  -0.0966 -5.03  1.25  -1.25 
-#>  5     5  98.4   7.10     1 -1.21   2.93  -1.24  -5.62   -1.16  0.253 -1.52 
-#>  6     6 171.   12.5      1  2.88   3.54   4.06  -1.46    1.33  3.93   4.62 
-#>  7     7 185.   15.3      1 -1.69   7.12   4.40   3.00    1.65  0.845 -0.617
-#>  8     8 128.    3.56     0  0.582  0.351 -2.86  -0.813  -4.13 -5.91  -5.39 
-#>  9     9  85.2   2.65     0  1.64  -1.65   0.550  0.277   1.14 -0.174 -3.74 
-#> 10    10 256.    9.70     0 -1.55  -0.150  3.39   3.62    1.91  1.06   1.28 
+#> # A tibble: 200 × 34
+#>     case     y     w     d        z1     z2      z3        z4      z5    z6
+#>    <int> <dbl> <dbl> <dbl>     <dbl>  <dbl>   <dbl>     <dbl>   <dbl> <dbl>
+#>  1     1  70.9  4.58     0 -3.65     -1.37   5.27   10.2       4.54    7.54
+#>  2     2 157.  12.6      0  2.78      4.35   3.78    5.21      7.00    1.56
+#>  3     3 156.  12.0      1  1.80     -0.182 -1.09   -3.97     -2.81    1.44
+#>  4     4  26.4  4.13     1  0.227    -1.15  -1.44   -6.43     -5.97   -1.22
+#>  5     5  45.3  5.27     1 -1.56     -2.30   0.606   0.970     6.37    5.09
+#>  6     6 122.   2.02     0 -0.000930 -2.10   0.476  -2.46      5.04    4.09
+#>  7     7  24.9  1.37     0 -3.73     -4.34  -1.58   -0.000185  0.0260  3.69
+#>  8     8 128.   7.74     1 -0.0911    3.58   2.09    2.92      5.13    1.11
+#>  9     9  96.6  7.02     1 -0.101     2.45   2.64    1.69      1.21    2.16
+#> 10    10 113.   5.54     0 -4.11     -1.80   0.0936 -4.47     -1.48   -1.56
 #> # ℹ 190 more rows
-#> # ℹ 3 more variables: z8 <dbl>, z9 <dbl>, z10 <dbl>
+#> # ℹ 24 more variables: z7 <dbl>, z8 <dbl>, z9 <dbl>, z10 <dbl>, z11 <dbl>,
+#> #   z12 <dbl>, z13 <dbl>, z14 <dbl>, z15 <dbl>, z16 <dbl>, z17 <dbl>,
+#> #   z18 <dbl>, z19 <dbl>, z20 <dbl>, z21 <dbl>, z22 <dbl>, z23 <dbl>,
+#> #   z24 <dbl>, z25 <dbl>, z26 <dbl>, z27 <dbl>, z28 <dbl>, z29 <dbl>, z30 <dbl>
 ```
 
 ``` r
 
+# Censoring rate should be approximately 50%
 mean(dat$d == 0)
-#> [1] 0.445
+#> [1] 0.475
 ```
 
 ## Fit the model
@@ -126,8 +131,8 @@ use a finer grid and potentially run in parallel with `cores > 1`.
 
 ``` r
 
-lambda_1s <- c(0.01, 0.05, 0.1, 0.5, 1)
-lambda_2s <- c(0.01, 0.05, 0.1, 0.5, 1)
+lambda_1s <- c(0.0001, 0.001, 0.01, 0.1, 1)
+lambda_2s <- c(0.0001, 0.001, 0.01, 0.1, 1)
 
 results <- ccreds(
   data = dat,
@@ -140,18 +145,23 @@ results
 #> # A tibble: 25 × 8
 #>    lambda_1 lambda_2 full_fit          CV_MAE_y CV_MAE_y_SE CV_MAE_x CV_MAE_x_SE
 #>       <dbl>    <dbl> <list>               <dbl>       <dbl>    <dbl>       <dbl>
-#>  1     0.01     0.01 <named list [13]>     35.0        1.74     3.22       0.176
-#>  2     0.01     0.05 <named list [13]>     35.1        1.61     3.17       0.148
-#>  3     0.01     0.1  <named list [13]>     35.2        1.63     3.13       0.139
-#>  4     0.01     0.5  <named list [13]>     36.2        1.69     3.15       0.133
-#>  5     0.01     1    <named list [13]>     38.6        1.93     3.22       0.220
-#>  6     0.05     0.01 <named list [13]>     35.7        2.08     3.21       0.176
-#>  7     0.05     0.05 <named list [13]>     35.9        1.99     3.17       0.143
-#>  8     0.05     0.1  <named list [13]>     36.2        2.13     3.14       0.129
-#>  9     0.05     0.5  <named list [13]>     38.0        2.18     3.14       0.132
-#> 10     0.05     1    <named list [13]>     41.2        2.37     3.20       0.225
+#>  1   0.0001   0.0001 <named list [13]>     32.7        1.77     2.92       0.267
+#>  2   0.0001   0.001  <named list [13]>     32.6        1.76     2.92       0.265
+#>  3   0.0001   0.01   <named list [13]>     32.1        1.58     2.88       0.243
+#>  4   0.0001   0.1    <named list [13]>     29.8        1.52     2.70       0.160
+#>  5   0.0001   1      <named list [13]>     33.4        1.23     3.00       0.204
+#>  6   0.001    0.0001 <named list [13]>     32.7        1.79     2.92       0.268
+#>  7   0.001    0.001  <named list [13]>     32.6        1.77     2.92       0.266
+#>  8   0.001    0.01   <named list [13]>     32.0        1.59     2.88       0.244
+#>  9   0.001    0.1    <named list [13]>     29.7        1.50     2.69       0.160
+#> 10   0.001    1      <named list [13]>     33.4        1.22     3.00       0.203
 #> # ℹ 15 more rows
 #> # ℹ 1 more variable: time <drtn>
+
+round(results$time, digits = 2)
+#> Time differences in secs
+#>  [1] 7.30 6.89 6.78 6.10 5.90 5.85 5.88 5.92 5.25 5.27 4.01 4.08 3.94 3.60 3.83
+#> [16] 2.91 2.91 2.91 2.66 2.72 2.92 2.76 2.81 2.58 2.55
 ```
 
 ## Identify the best model
@@ -168,7 +178,8 @@ to retrieve the fitted model. The default `rule = "min"` selects the
 fit <- extract_fit(results)
 ```
 
-We can inspect the estimated coefficients and compare them to the truth:
+We can inspect the first few estimated coefficients and compare them to
+the truth:
 
 ``` r
 
@@ -178,19 +189,20 @@ tibble(
   true_beta = beta,
   estimated_beta = round(fit$beta, 3)
 )
-#> # A tibble: 10 × 3
+#> # A tibble: 30 × 3
 #>    feature true_beta estimated_beta
 #>    <chr>       <dbl>          <dbl>
-#>  1 z1              4           3.62
-#>  2 z2              4           3.58
-#>  3 z3              2           2.02
-#>  4 z4              0           0   
-#>  5 z5              0           0   
-#>  6 z6              0           0   
-#>  7 z7              0           0   
-#>  8 z8              0           0   
-#>  9 z9             -2          -2.38
-#> 10 z10            -4          -3.32
+#>  1 z1              4          3.23 
+#>  2 z2              4          4.34 
+#>  3 z3              2          1.54 
+#>  4 z4              0          0    
+#>  5 z5              0          0    
+#>  6 z6              0          0.329
+#>  7 z7              0          0    
+#>  8 z8              0          0    
+#>  9 z9              0          0    
+#> 10 z10             0          0    
+#> # ℹ 20 more rows
 
 # Censored-covariate coefficients
 tibble(
@@ -198,19 +210,20 @@ tibble(
   true_gamma = gamma,
   estimated_gamma = round(fit$gamma, 5)
 )
-#> # A tibble: 10 × 3
+#> # A tibble: 30 × 3
 #>    feature true_gamma estimated_gamma
 #>    <chr>        <dbl>           <dbl>
-#>  1 z1            0            0.00302
-#>  2 z2            0.04         0.0335 
-#>  3 z3            0.04         0.0729 
-#>  4 z4            0.02         0.00364
-#>  5 z5            0.02         0.0343 
-#>  6 z6            0           -0.0231 
-#>  7 z7            0            0.0167 
-#>  8 z8            0           -0.0195 
-#>  9 z9            0            0.00402
-#> 10 z10           0           -0.00418
+#>  1 z1            0.04         0.0297 
+#>  2 z2            0.04         0.0418 
+#>  3 z3            0.02         0.0341 
+#>  4 z4            0.02         0      
+#>  5 z5            0            0      
+#>  6 z6            0            0      
+#>  7 z7            0           -0.00484
+#>  8 z8            0            0      
+#>  9 z9            0            0      
+#> 10 z10           0            0      
+#> # ℹ 20 more rows
 ```
 
 ## Visualise: Cross-validation heatmap
@@ -226,17 +239,6 @@ plot_cv(results)
 
 ![Heatmap of cross-validated MAE over the lambda
 grid.](ccreds-workflow_files/figure-html/plot-cv-1.png)
-
-You can also plot `CV_MAE_x` (prediction error for the censored
-covariate among complete observations):
-
-``` r
-
-plot_cv(results, metric = "CV_MAE_x")
-```
-
-![Heatmap of cross-validated MAE for
-x.](ccreds-workflow_files/figure-html/plot-cv-x-1.png)
 
 ## Visualise: Coefficient paths
 
@@ -270,7 +272,7 @@ feature vector \\\mathbf{z}\\.
 ``` r
 
 z_new <- rep(0, p)
-plot_density(fit, z = z_new)
+plot_density(fit, z = z_new, x_range = c(0,20), y_range = c(0, 200))
 ```
 
 ![Joint density contour plot of y and

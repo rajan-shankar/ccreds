@@ -84,9 +84,11 @@ holding \(\lambda_2\) fixed, and vice versa for
 
 
 <dt id="arg-lambda-fixed">lambda_fixed<a class="anchor" aria-label="anchor" href="#arg-lambda-fixed"></a></dt>
-<dd><p>The value of the held-fixed penalty. If
-<code>NULL</code> (default), uses the value at the minimum <code>CV_MAE_y</code>
-row.</p></dd>
+<dd><p>The value of the other penalty to hold
+constant while the plotted penalty varies. When
+<code>component = "beta"</code>, this fixes \(\lambda_2\); when
+<code>component = "gamma"</code>, this fixes \(\lambda_1\). If <code>NULL</code>
+(default), uses the value from the minimum <code>CV_MAE_y</code> model.</p></dd>
 
 
 <dt id="arg-feature-names">feature_names<a class="anchor" aria-label="anchor" href="#arg-feature-names"></a></dt>

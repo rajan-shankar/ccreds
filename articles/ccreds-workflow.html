@@ -100,7 +100,7 @@ cross-validated penalty selection, and visualising the results.</p>
 <h2 id="simulate-data">Simulate data<a class="anchor" aria-label="anchor" href="#simulate-data"></a>
 </h2>
 <p>We generate data from the censored-covariate regression model with
-<span class="math inline">\(n = 200\)</span> observations and <span class="math inline">\(p = 10\)</span> features.</p>
+<span class="math inline">\(n = 200\)</span> observations and <span class="math inline">\(p = 30\)</span> features.</p>
 <p><strong>Response-variable model:</strong> <span class="math display">\[y_i = \beta_0 + \alpha x_i + \pmb{\beta}^\top
 \mathbf{z}_i + \varepsilon_i, \quad \varepsilon_i \sim N(0,
 \sigma^2)\]</span></p>
@@ -108,26 +108,27 @@ cross-validated penalty selection, and visualising the results.</p>
 \mu_i = \exp(\gamma_0 + \pmb{\gamma}^\top \mathbf{z}_i)\]</span></p>
 <p>We set <span class="math inline">\(\pmb{\beta}\)</span> and <span class="math inline">\(\pmb{\gamma}\)</span> to be sparse with partially
 overlapping support, so that some features affect only the response,
-some affect only the censored covariate, and some affect both.</p>
+some affect only the censored covariate, and some affect both. We set
+the censoring rate to be approximately 50%.</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">8371</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">n</span> <span class="op">&lt;-</span> <span class="fl">200</span></span>
-<span><span class="va">p</span> <span class="op">&lt;-</span> <span class="fl">10</span></span>
+<span><span class="va">p</span> <span class="op">&lt;-</span> <span class="fl">30</span></span>
 <span></span>
 <span><span class="co"># Correlated features (AR(0.5) structure)</span></span>
 <span><span class="va">rho</span> <span class="op">&lt;-</span> <span class="fl">0.5</span></span>
-<span><span class="va">Sigma</span> <span class="op">&lt;-</span> <span class="fl">9</span> <span class="op">*</span> <span class="fu"><a href="https://rdrr.io/r/stats/toeplitz.html" class="external-link">toeplitz</a></span><span class="op">(</span><span class="va">rho</span><span class="op">^</span><span class="op">(</span><span class="fl">0</span><span class="op">:</span><span class="op">(</span><span class="va">p</span> <span class="op">-</span> <span class="fl">1</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="va">Sigma</span> <span class="op">&lt;-</span> <span class="fl">9</span><span class="op">*</span><span class="fu"><a href="https://rdrr.io/r/stats/toeplitz.html" class="external-link">toeplitz</a></span><span class="op">(</span><span class="va">rho</span><span class="op">^</span><span class="op">(</span><span class="fl">0</span><span class="op">:</span><span class="op">(</span><span class="va">p</span> <span class="op">-</span> <span class="fl">1</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="va">z</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/MASS/man/mvrnorm.html" class="external-link">mvrnorm</a></span><span class="op">(</span>n <span class="op">=</span> <span class="va">n</span>, mu <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="fl">0</span>, <span class="va">p</span><span class="op">)</span>, Sigma <span class="op">=</span> <span class="va">Sigma</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># True parameters</span></span>
 <span><span class="va">beta_0</span> <span class="op">&lt;-</span> <span class="fl">5</span></span>
 <span><span class="va">alpha</span> <span class="op">&lt;-</span> <span class="fl">10</span></span>
-<span><span class="va">beta</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">4</span>, <span class="fl">4</span>, <span class="fl">2</span>, <span class="fl">0</span>, <span class="fl">0</span>, <span class="fl">0</span>, <span class="fl">0</span>, <span class="fl">0</span>, <span class="op">-</span><span class="fl">2</span>, <span class="op">-</span><span class="fl">4</span><span class="op">)</span></span>
+<span><span class="va">beta</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">4</span>, <span class="fl">4</span>, <span class="fl">2</span>, <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="fl">0</span>, <span class="va">p</span><span class="op">-</span><span class="fl">5</span><span class="op">)</span>, <span class="op">-</span><span class="fl">2</span>, <span class="op">-</span><span class="fl">4</span><span class="op">)</span></span>
 <span><span class="va">sigma_sq</span> <span class="op">&lt;-</span> <span class="fl">100</span></span>
 <span></span>
 <span><span class="va">gamma_0</span> <span class="op">&lt;-</span> <span class="fl">2</span></span>
-<span><span class="va">gamma</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">0.04</span>, <span class="fl">0.04</span>, <span class="fl">0.02</span>, <span class="fl">0.02</span>, <span class="fl">0</span>, <span class="fl">0</span>, <span class="fl">0</span>, <span class="fl">0</span>, <span class="fl">0</span><span class="op">)</span></span>
+<span><span class="va">gamma</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.04</span>, <span class="fl">0.04</span>, <span class="fl">0.02</span>, <span class="fl">0.02</span>, <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="fl">0</span>, <span class="va">p</span><span class="op">-</span><span class="fl">4</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Generate the censored covariate x</span></span>
 <span><span class="va">x_mean</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">exp</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">cbind</a></span><span class="op">(</span><span class="fl">1</span>, <span class="va">z</span><span class="op">)</span> <span class="op"><a href="https://rdrr.io/r/base/matmult.html" class="external-link">%*%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">gamma_0</span>, <span class="va">gamma</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://rdrr.io/r/base/drop.html" class="external-link">drop</a></span><span class="op">(</span><span class="op">)</span></span>
@@ -163,24 +164,28 @@ some affect only the censored covariate, and some affect both.</p>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/bind_cols.html" class="external-link">bind_cols</a></span><span class="op">(</span><span class="va">z_df</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">dat</span></span>
-<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 200 × 14</span></span></span>
-<span><span class="co">#&gt;     case      y     w     d     z1     z2     z3      z4    z5     z6     z7</span></span>
-<span><span class="co">#&gt;    <span style="color: #949494; font-style: italic;">&lt;int&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 1</span>     1 176.    9.32     0  1.07   5.09  -<span style="color: #BB0000;">1.76</span>  -<span style="color: #BB0000;">5.49</span>   -<span style="color: #BB0000;">1.21</span> -<span style="color: #BB0000;">6.77</span>  -<span style="color: #BB0000;">6.46</span> </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 2</span>     2  50.9   4.03     1  3.85   0.857 -<span style="color: #BB0000;">2.32</span>  -<span style="color: #BB0000;">5.36</span>   -<span style="color: #BB0000;">5.48</span> -<span style="color: #BB0000;">3.39</span>  -<span style="color: #BB0000;">2.34</span> </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 3</span>     3  54.6   3.44     1 -<span style="color: #BB0000;">4.05</span>   1.53  -<span style="color: #BB0000;">4.13</span>   2.95   -<span style="color: #BB0000;">1.12</span> -<span style="color: #BB0000;">1.33</span>  -<span style="color: #BB0000;">4.18</span> </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 4</span>     4   3.39  3.17     0 -<span style="color: #BB0000;">5.46</span>  -<span style="color: #BB0000;">2.77</span>  -<span style="color: #BB0000;">1.82</span>  -<span style="color: #BB0000;">0.096</span><span style="color: #BB0000; text-decoration: underline;">6</span> -<span style="color: #BB0000;">5.03</span>  1.25  -<span style="color: #BB0000;">1.25</span> </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 5</span>     5  98.4   7.10     1 -<span style="color: #BB0000;">1.21</span>   2.93  -<span style="color: #BB0000;">1.24</span>  -<span style="color: #BB0000;">5.62</span>   -<span style="color: #BB0000;">1.16</span>  0.253 -<span style="color: #BB0000;">1.52</span> </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 6</span>     6 171.   12.5      1  2.88   3.54   4.06  -<span style="color: #BB0000;">1.46</span>    1.33  3.93   4.62 </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 7</span>     7 185.   15.3      1 -<span style="color: #BB0000;">1.69</span>   7.12   4.40   3.00    1.65  0.845 -<span style="color: #BB0000;">0.617</span></span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 8</span>     8 128.    3.56     0  0.582  0.351 -<span style="color: #BB0000;">2.86</span>  -<span style="color: #BB0000;">0.813</span>  -<span style="color: #BB0000;">4.13</span> -<span style="color: #BB0000;">5.91</span>  -<span style="color: #BB0000;">5.39</span> </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 9</span>     9  85.2   2.65     0  1.64  -<span style="color: #BB0000;">1.65</span>   0.550  0.277   1.14 -<span style="color: #BB0000;">0.174</span> -<span style="color: #BB0000;">3.74</span> </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">10</span>    10 256.    9.70     0 -<span style="color: #BB0000;">1.55</span>  -<span style="color: #BB0000;">0.150</span>  3.39   3.62    1.91  1.06   1.28 </span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 200 × 34</span></span></span>
+<span><span class="co">#&gt;     case     y     w     d        z1     z2      z3        z4      z5    z6</span></span>
+<span><span class="co">#&gt;    <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 1</span>     1  70.9  4.58     0 -<span style="color: #BB0000;">3.65</span>     -<span style="color: #BB0000;">1.37</span>   5.27   10.2       4.54    7.54</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 2</span>     2 157.  12.6      0  2.78      4.35   3.78    5.21      7.00    1.56</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 3</span>     3 156.  12.0      1  1.80     -<span style="color: #BB0000;">0.182</span> -<span style="color: #BB0000;">1.09</span>   -<span style="color: #BB0000;">3.97</span>     -<span style="color: #BB0000;">2.81</span>    1.44</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 4</span>     4  26.4  4.13     1  0.227    -<span style="color: #BB0000;">1.15</span>  -<span style="color: #BB0000;">1.44</span>   -<span style="color: #BB0000;">6.43</span>     -<span style="color: #BB0000;">5.97</span>   -<span style="color: #BB0000;">1.22</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 5</span>     5  45.3  5.27     1 -<span style="color: #BB0000;">1.56</span>     -<span style="color: #BB0000;">2.30</span>   0.606   0.970     6.37    5.09</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 6</span>     6 122.   2.02     0 -<span style="color: #BB0000;">0.000</span><span style="color: #BB0000; text-decoration: underline;">930</span> -<span style="color: #BB0000;">2.10</span>   0.476  -<span style="color: #BB0000;">2.46</span>      5.04    4.09</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 7</span>     7  24.9  1.37     0 -<span style="color: #BB0000;">3.73</span>     -<span style="color: #BB0000;">4.34</span>  -<span style="color: #BB0000;">1.58</span>   -<span style="color: #BB0000;">0.000</span><span style="color: #BB0000; text-decoration: underline;">185</span>  0.026<span style="text-decoration: underline;">0</span>  3.69</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 8</span>     8 128.   7.74     1 -<span style="color: #BB0000;">0.091</span><span style="color: #BB0000; text-decoration: underline;">1</span>    3.58   2.09    2.92      5.13    1.11</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 9</span>     9  96.6  7.02     1 -<span style="color: #BB0000;">0.101</span>     2.45   2.64    1.69      1.21    2.16</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">10</span>    10 113.   5.54     0 -<span style="color: #BB0000;">4.11</span>     -<span style="color: #BB0000;">1.80</span>   0.093<span style="text-decoration: underline;">6</span> -<span style="color: #BB0000;">4.47</span>     -<span style="color: #BB0000;">1.48</span>   -<span style="color: #BB0000;">1.56</span></span></span>
 <span><span class="co">#&gt; <span style="color: #949494;"># ℹ 190 more rows</span></span></span>
-<span><span class="co">#&gt; <span style="color: #949494;"># ℹ 3 more variables: z8 &lt;dbl&gt;, z9 &lt;dbl&gt;, z10 &lt;dbl&gt;</span></span></span></code></pre></div>
+<span><span class="co">#&gt; <span style="color: #949494;"># ℹ 24 more variables: z7 &lt;dbl&gt;, z8 &lt;dbl&gt;, z9 &lt;dbl&gt;, z10 &lt;dbl&gt;, z11 &lt;dbl&gt;,</span></span></span>
+<span><span class="co">#&gt; <span style="color: #949494;">#   z12 &lt;dbl&gt;, z13 &lt;dbl&gt;, z14 &lt;dbl&gt;, z15 &lt;dbl&gt;, z16 &lt;dbl&gt;, z17 &lt;dbl&gt;,</span></span></span>
+<span><span class="co">#&gt; <span style="color: #949494;">#   z18 &lt;dbl&gt;, z19 &lt;dbl&gt;, z20 &lt;dbl&gt;, z21 &lt;dbl&gt;, z22 &lt;dbl&gt;, z23 &lt;dbl&gt;,</span></span></span>
+<span><span class="co">#&gt; <span style="color: #949494;">#   z24 &lt;dbl&gt;, z25 &lt;dbl&gt;, z26 &lt;dbl&gt;, z27 &lt;dbl&gt;, z28 &lt;dbl&gt;, z29 &lt;dbl&gt;, z30 &lt;dbl&gt;</span></span></span></code></pre></div>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/mean.html" class="external-link">mean</a></span><span class="op">(</span><span class="va">dat</span><span class="op">$</span><span class="va">d</span> <span class="op">==</span> <span class="fl">0</span><span class="op">)</span></span>
-<span><span class="co">#&gt; [1] 0.445</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="co"># Censoring rate should be approximately 50%</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/mean.html" class="external-link">mean</a></span><span class="op">(</span><span class="va">dat</span><span class="op">$</span><span class="va">d</span> <span class="op">==</span> <span class="fl">0</span><span class="op">)</span></span>
+<span><span class="co">#&gt; [1] 0.475</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="fit-the-model">Fit the model<a class="anchor" aria-label="anchor" href="#fit-the-model"></a>
@@ -189,8 +194,8 @@ some affect only the censored covariate, and some affect both.</p>
 would use a finer grid and potentially run in parallel with
 <code>cores &gt; 1</code>.</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">lambda_1s</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.01</span>, <span class="fl">0.05</span>, <span class="fl">0.1</span>, <span class="fl">0.5</span>, <span class="fl">1</span><span class="op">)</span></span>
-<span><span class="va">lambda_2s</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.01</span>, <span class="fl">0.05</span>, <span class="fl">0.1</span>, <span class="fl">0.5</span>, <span class="fl">1</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="va">lambda_1s</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.0001</span>, <span class="fl">0.001</span>, <span class="fl">0.01</span>, <span class="fl">0.1</span>, <span class="fl">1</span><span class="op">)</span></span>
+<span><span class="va">lambda_2s</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.0001</span>, <span class="fl">0.001</span>, <span class="fl">0.01</span>, <span class="fl">0.1</span>, <span class="fl">1</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">results</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ccreds.html">ccreds</a></span><span class="op">(</span></span>
 <span>  data <span class="op">=</span> <span class="va">dat</span>,</span>
@@ -203,18 +208,23 @@ would use a finer grid and potentially run in parallel with
 <span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 25 × 8</span></span></span>
 <span><span class="co">#&gt;    lambda_1 lambda_2 full_fit          CV_MAE_y CV_MAE_y_SE CV_MAE_x CV_MAE_x_SE</span></span>
 <span><span class="co">#&gt;       <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;list&gt;</span>               <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>       <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>       <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 1</span>     0.01     0.01 <span style="color: #949494;">&lt;named list [13]&gt;</span>     35.0        1.74     3.22       0.176</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 2</span>     0.01     0.05 <span style="color: #949494;">&lt;named list [13]&gt;</span>     35.1        1.61     3.17       0.148</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 3</span>     0.01     0.1  <span style="color: #949494;">&lt;named list [13]&gt;</span>     35.2        1.63     3.13       0.139</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 4</span>     0.01     0.5  <span style="color: #949494;">&lt;named list [13]&gt;</span>     36.2        1.69     3.15       0.133</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 5</span>     0.01     1    <span style="color: #949494;">&lt;named list [13]&gt;</span>     38.6        1.93     3.22       0.220</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 6</span>     0.05     0.01 <span style="color: #949494;">&lt;named list [13]&gt;</span>     35.7        2.08     3.21       0.176</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 7</span>     0.05     0.05 <span style="color: #949494;">&lt;named list [13]&gt;</span>     35.9        1.99     3.17       0.143</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 8</span>     0.05     0.1  <span style="color: #949494;">&lt;named list [13]&gt;</span>     36.2        2.13     3.14       0.129</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 9</span>     0.05     0.5  <span style="color: #949494;">&lt;named list [13]&gt;</span>     38.0        2.18     3.14       0.132</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">10</span>     0.05     1    <span style="color: #949494;">&lt;named list [13]&gt;</span>     41.2        2.37     3.20       0.225</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 1</span>   0.000<span style="text-decoration: underline;">1</span>   0.000<span style="text-decoration: underline;">1</span> <span style="color: #949494;">&lt;named list [13]&gt;</span>     32.7        1.77     2.92       0.267</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 2</span>   0.000<span style="text-decoration: underline;">1</span>   0.001  <span style="color: #949494;">&lt;named list [13]&gt;</span>     32.6        1.76     2.92       0.265</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 3</span>   0.000<span style="text-decoration: underline;">1</span>   0.01   <span style="color: #949494;">&lt;named list [13]&gt;</span>     32.1        1.58     2.88       0.243</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 4</span>   0.000<span style="text-decoration: underline;">1</span>   0.1    <span style="color: #949494;">&lt;named list [13]&gt;</span>     29.8        1.52     2.70       0.160</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 5</span>   0.000<span style="text-decoration: underline;">1</span>   1      <span style="color: #949494;">&lt;named list [13]&gt;</span>     33.4        1.23     3.00       0.204</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 6</span>   0.001    0.000<span style="text-decoration: underline;">1</span> <span style="color: #949494;">&lt;named list [13]&gt;</span>     32.7        1.79     2.92       0.268</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 7</span>   0.001    0.001  <span style="color: #949494;">&lt;named list [13]&gt;</span>     32.6        1.77     2.92       0.266</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 8</span>   0.001    0.01   <span style="color: #949494;">&lt;named list [13]&gt;</span>     32.0        1.59     2.88       0.244</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 9</span>   0.001    0.1    <span style="color: #949494;">&lt;named list [13]&gt;</span>     29.7        1.50     2.69       0.160</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">10</span>   0.001    1      <span style="color: #949494;">&lt;named list [13]&gt;</span>     33.4        1.22     3.00       0.203</span></span>
 <span><span class="co">#&gt; <span style="color: #949494;"># ℹ 15 more rows</span></span></span>
-<span><span class="co">#&gt; <span style="color: #949494;"># ℹ 1 more variable: time &lt;drtn&gt;</span></span></span></code></pre></div>
+<span><span class="co">#&gt; <span style="color: #949494;"># ℹ 1 more variable: time &lt;drtn&gt;</span></span></span>
+<span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/Round.html" class="external-link">round</a></span><span class="op">(</span><span class="va">results</span><span class="op">$</span><span class="va">time</span>, digits <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Time differences in secs</span></span>
+<span><span class="co">#&gt;  [1] 7.30 6.89 6.78 6.10 5.90 5.85 5.88 5.92 5.25 5.27 4.01 4.08 3.94 3.60 3.83</span></span>
+<span><span class="co">#&gt; [16] 2.91 2.91 2.91 2.66 2.72 2.92 2.76 2.81 2.58 2.55</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="identify-the-best-model">Identify the best model<a class="anchor" aria-label="anchor" href="#identify-the-best-model"></a>
@@ -226,8 +236,8 @@ alternative selects the most parsimonious model whose
 <code>CV_MAE_y</code> is within one standard error of the minimum.</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">fit</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/extract_fit.html">extract_fit</a></span><span class="op">(</span><span class="va">results</span><span class="op">)</span></span></code></pre></div>
-<p>We can inspect the estimated coefficients and compare them to the
-truth:</p>
+<p>We can inspect the first few estimated coefficients and compare them
+to the truth:</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Response-model coefficients</span></span>
 <span><span class="fu"><a href="https://tibble.tidyverse.org/reference/tibble.html" class="external-link">tibble</a></span><span class="op">(</span></span>
@@ -235,19 +245,20 @@ truth:</p>
 <span>  true_beta <span class="op">=</span> <span class="va">beta</span>,</span>
 <span>  estimated_beta <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Round.html" class="external-link">round</a></span><span class="op">(</span><span class="va">fit</span><span class="op">$</span><span class="va">beta</span>, <span class="fl">3</span><span class="op">)</span></span>
 <span><span class="op">)</span></span>
-<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 10 × 3</span></span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 30 × 3</span></span></span>
 <span><span class="co">#&gt;    feature true_beta estimated_beta</span></span>
 <span><span class="co">#&gt;    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>       <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>          <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 1</span> z1              4           3.62</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 2</span> z2              4           3.58</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 3</span> z3              2           2.02</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 4</span> z4              0           0   </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 5</span> z5              0           0   </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 6</span> z6              0           0   </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 7</span> z7              0           0   </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 8</span> z8              0           0   </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 9</span> z9             -<span style="color: #BB0000;">2</span>          -<span style="color: #BB0000;">2.38</span></span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">10</span> z10            -<span style="color: #BB0000;">4</span>          -<span style="color: #BB0000;">3.32</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 1</span> z1              4          3.23 </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 2</span> z2              4          4.34 </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 3</span> z3              2          1.54 </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 4</span> z4              0          0    </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 5</span> z5              0          0    </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 6</span> z6              0          0.329</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 7</span> z7              0          0    </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 8</span> z8              0          0    </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 9</span> z9              0          0    </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">10</span> z10             0          0    </span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># ℹ 20 more rows</span></span></span>
 <span></span>
 <span><span class="co"># Censored-covariate coefficients</span></span>
 <span><span class="fu"><a href="https://tibble.tidyverse.org/reference/tibble.html" class="external-link">tibble</a></span><span class="op">(</span></span>
@@ -255,19 +266,20 @@ truth:</p>
 <span>  true_gamma <span class="op">=</span> <span class="va">gamma</span>,</span>
 <span>  estimated_gamma <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Round.html" class="external-link">round</a></span><span class="op">(</span><span class="va">fit</span><span class="op">$</span><span class="va">gamma</span>, <span class="fl">5</span><span class="op">)</span></span>
 <span><span class="op">)</span></span>
-<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 10 × 3</span></span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 30 × 3</span></span></span>
 <span><span class="co">#&gt;    feature true_gamma estimated_gamma</span></span>
 <span><span class="co">#&gt;    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>        <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>           <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 1</span> z1            0            0.003<span style="text-decoration: underline;">02</span></span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 2</span> z2            0.04         0.033<span style="text-decoration: underline;">5</span> </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 3</span> z3            0.04         0.072<span style="text-decoration: underline;">9</span> </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 4</span> z4            0.02         0.003<span style="text-decoration: underline;">64</span></span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 5</span> z5            0.02         0.034<span style="text-decoration: underline;">3</span> </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 6</span> z6            0           -<span style="color: #BB0000;">0.023</span><span style="color: #BB0000; text-decoration: underline;">1</span> </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 7</span> z7            0            0.016<span style="text-decoration: underline;">7</span> </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 8</span> z8            0           -<span style="color: #BB0000;">0.019</span><span style="color: #BB0000; text-decoration: underline;">5</span> </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 9</span> z9            0            0.004<span style="text-decoration: underline;">02</span></span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">10</span> z10           0           -<span style="color: #BB0000;">0.004</span><span style="color: #BB0000; text-decoration: underline;">18</span></span></span></code></pre></div>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 1</span> z1            0.04         0.029<span style="text-decoration: underline;">7</span> </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 2</span> z2            0.04         0.041<span style="text-decoration: underline;">8</span> </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 3</span> z3            0.02         0.034<span style="text-decoration: underline;">1</span> </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 4</span> z4            0.02         0      </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 5</span> z5            0            0      </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 6</span> z6            0            0      </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 7</span> z7            0           -<span style="color: #BB0000;">0.004</span><span style="color: #BB0000; text-decoration: underline;">84</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 8</span> z8            0            0      </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 9</span> z9            0            0      </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">10</span> z10           0            0      </span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># ℹ 20 more rows</span></span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="visualise-cross-validation-heatmap">Visualise: Cross-validation heatmap<a class="anchor" aria-label="anchor" href="#visualise-cross-validation-heatmap"></a>
@@ -277,11 +289,6 @@ penalty grid. The white cross marks the optimal pair.</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/plot_cv.html">plot_cv</a></span><span class="op">(</span><span class="va">results</span><span class="op">)</span></span></code></pre></div>
 <p><img src="ccreds-workflow_files/figure-html/plot-cv-1.png" class="r-plt" alt="Heatmap of cross-validated MAE over the lambda grid." width="672"></p>
-<p>You can also plot <code>CV_MAE_x</code> (prediction error for the
-censored covariate among complete observations):</p>
-<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/plot_cv.html">plot_cv</a></span><span class="op">(</span><span class="va">results</span>, metric <span class="op">=</span> <span class="st">"CV_MAE_x"</span><span class="op">)</span></span></code></pre></div>
-<p><img src="ccreds-workflow_files/figure-html/plot-cv-x-1.png" class="r-plt" alt="Heatmap of cross-validated MAE for x." width="672"></p>
 </div>
 <div class="section level2">
 <h2 id="visualise-coefficient-paths">Visualise: Coefficient paths<a class="anchor" aria-label="anchor" href="#visualise-coefficient-paths"></a>
@@ -289,10 +296,10 @@ censored covariate among complete observations):</p>
 <p><code><a href="../reference/plot_coefficient_paths.html">plot_coefficient_paths()</a></code> shows how the estimated
 coefficients change as the penalty parameter varies, holding the other
 penalty fixed at the value from the best model.</p>
-<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/plot_coefficient_paths.html">plot_coefficient_paths</a></span><span class="op">(</span><span class="va">results</span>, component <span class="op">=</span> <span class="st">"beta"</span>, highlight <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
 <p><img src="ccreds-workflow_files/figure-html/coef-paths-beta-1.png" class="r-plt" alt="Coefficient paths for beta as lambda_1 varies." width="672"></p>
-<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/plot_coefficient_paths.html">plot_coefficient_paths</a></span><span class="op">(</span><span class="va">results</span>, component <span class="op">=</span> <span class="st">"gamma"</span>, highlight <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
 <p><img src="ccreds-workflow_files/figure-html/coef-paths-gamma-1.png" class="r-plt" alt="Coefficient paths for gamma as lambda_2 varies." width="672"></p>
 </div>
@@ -302,14 +309,14 @@ penalty fixed at the value from the best model.</p>
 <p><code><a href="../reference/plot_density.html">plot_density()</a></code> displays the joint or conditional density
 of <span class="math inline">\((y, x)\)</span> for a given feature
 vector <span class="math inline">\(\mathbf{z}\)</span>.</p>
-<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">z_new</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="fl">0</span>, <span class="va">p</span><span class="op">)</span></span>
-<span><span class="fu"><a href="../reference/plot_density.html">plot_density</a></span><span class="op">(</span><span class="va">fit</span>, z <span class="op">=</span> <span class="va">z_new</span><span class="op">)</span></span></code></pre></div>
+<span><span class="fu"><a href="../reference/plot_density.html">plot_density</a></span><span class="op">(</span><span class="va">fit</span>, z <span class="op">=</span> <span class="va">z_new</span>, x_range <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>,<span class="fl">20</span><span class="op">)</span>, y_range <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">200</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <p><img src="ccreds-workflow_files/figure-html/density-joint-1.png" class="r-plt" alt="Joint density contour plot of y and x." width="672"></p>
 <p>Supplying <code>y_given</code> shows the marginal density <span class="math inline">\(f(x \mid \mathbf{z})\)</span> alongside the
 conditional density <span class="math inline">\(f(x \mid \mathbf{z},
 y)\)</span>:</p>
-<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/plot_density.html">plot_density</a></span><span class="op">(</span><span class="va">fit</span>, z <span class="op">=</span> <span class="va">z_new</span>, y_given <span class="op">=</span> <span class="fl">50</span><span class="op">)</span></span></code></pre></div>
 <p><img src="ccreds-workflow_files/figure-html/density-conditional-1.png" class="r-plt" alt="Marginal vs conditional density of x given z and y." width="672"></p>
 </div>

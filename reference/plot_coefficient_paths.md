@@ -30,8 +30,10 @@ plot_coefficient_paths(
 
 - lambda_fixed:
 
-  The value of the held-fixed penalty. If `NULL` (default), uses the
-  value at the minimum `CV_MAE_y` row.
+  The value of the other penalty to hold constant while the plotted
+  penalty varies. When `component = "beta"`, this fixes \\\lambda_2\\;
+  when `component = "gamma"`, this fixes \\\lambda_1\\. If `NULL`
+  (default), uses the value from the minimum `CV_MAE_y` model.
 
 - feature_names:
 
