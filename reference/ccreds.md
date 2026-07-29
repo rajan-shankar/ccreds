@@ -33,23 +33,22 @@ ccreds(
 - lambda_1s:
 
   Numeric vector of candidate values for \\\lambda_1\\, the penalty on
-  \\\boldsymbol{\beta}\\.
+  \\\pmb{\beta}\\.
 
 - lambda_2s:
 
   Numeric vector of candidate values for \\\lambda_2\\, the penalty on
-  \\\boldsymbol{\gamma}\\.
+  \\\pmb{\gamma}\\.
 
 - force_active_beta:
 
   Integer vector of feature indices (referring to z column numbers) that
-  should not be penalised in \\\boldsymbol{\beta}\\. Default is
-  `integer(0)`.
+  should not be penalised in \\\pmb{\beta}\\. Default is `integer(0)`.
 
 - force_active_gamma:
 
   Integer vector of feature indices that should not be penalised in
-  \\\boldsymbol{\gamma}\\. Default is `integer(0)`.
+  \\\pmb{\gamma}\\. Default is `integer(0)`.
 
 - k:
 
@@ -82,7 +81,7 @@ A tibble with one row per \\(\lambda_1, \lambda_2)\\ pair and columns:
 
   beta
 
-  :   Feature coefficient vector \\\boldsymbol{\beta}\\ of length \\p\\.
+  :   Feature coefficient vector \\\pmb{\beta}\\ of length \\p\\.
 
   sigma_sq
 
@@ -94,18 +93,17 @@ A tibble with one row per \\(\lambda_1, \lambda_2)\\ pair and columns:
 
   gamma
 
-  :   Feature coefficient vector \\\boldsymbol{\gamma}\\ of length
-      \\p\\.
+  :   Feature coefficient vector \\\pmb{\gamma}\\ of length \\p\\.
 
   beta_selected
 
-  :   Number of non-zero entries in \\\hat{\boldsymbol{\beta}}\\
-      (excluding forced-active features).
+  :   Number of non-zero entries in \\\hat{\pmb{\beta}}\\ (excluding
+      forced-active features).
 
   gamma_selected
 
-  :   Number of non-zero entries in \\\hat{\boldsymbol{\gamma}}\\
-      (excluding forced-active features).
+  :   Number of non-zero entries in \\\hat{\pmb{\gamma}}\\ (excluding
+      forced-active features).
 
   iterations
 
@@ -137,17 +135,17 @@ A tibble with one row per \\(\lambda_1, \lambda_2)\\ pair and columns:
 The censored-covariate regression model consists of two components:
 
 **Response-variable model:** \$\$y_i = \beta_0 + \alpha x_i +
-\boldsymbol{\beta}^\top \mathbf{z}\_i + \varepsilon_i, \quad
-\varepsilon_i \sim N(0, \sigma^2)\$\$
+\pmb{\beta}^\top \mathbf{z}\_i + \varepsilon_i, \quad \varepsilon_i \sim
+N(0, \sigma^2)\$\$
 
 **Censored-covariate model:** \$\$X_i \mid \mathbf{z}\_i \sim
-\chi^2(\mu_i), \quad \mu_i = \exp(\gamma_0 + \boldsymbol{\gamma}^\top
+\chi^2(\mu_i), \quad \mu_i = \exp(\gamma_0 + \pmb{\gamma}^\top
 \mathbf{z}\_i)\$\$
 
 Here \\\beta_0\\ and \\\gamma_0\\ are intercepts, \\\alpha\\ is the
-coefficient of the censored covariate \\x\\, and \\\boldsymbol{\beta}\\
-and \\\boldsymbol{\gamma}\\ are feature coefficient vectors subject to
-\\L_1\\ penalisation.
+coefficient of the censored covariate \\x\\, and \\\pmb{\beta}\\ and
+\\\pmb{\gamma}\\ are feature coefficient vectors subject to \\L_1\\
+penalisation.
 
 ## References
 

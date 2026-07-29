@@ -6,6 +6,11 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <title>Getting Started with ccreds • ccreds</title>
+<!-- favicons --><link rel="icon" type="image/png" sizes="96x96" href="../favicon-96x96.png">
+<link rel="icon" type="”image/svg+xml”" href="../favicon.svg">
+<link rel="apple-touch-icon" sizes="180x180" href="../apple-touch-icon.png">
+<link rel="icon" sizes="any" href="../favicon.ico">
+<link rel="manifest" href="../site.webmanifest">
 <!-- mathjax math --><script src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-mml-chtml.js" integrity="sha256-MASABpB4tYktI2Oitl4t+78w/lyA+D7b/s9GEP0JOGI=" crossorigin="anonymous"></script><script>
   window.MathJax = {
     chtml: {
@@ -19,20 +24,6 @@
 <script src="../deps/headroom-0.11.0/headroom.min.js"></script><script src="../deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="../deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="../deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="../deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="../deps/search-1.0.0/fuse.min.js"></script><script src="../deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="Getting Started with ccreds">
 </head>
 <body>
-<p>
-
-
-
-
-
-
-
-
-  pkgdown/mathjax-config.html
-
-  
-
-  </p>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
 
 
@@ -110,17 +101,14 @@ cross-validated penalty selection, and visualising the results.</p>
 </h2>
 <p>We generate data from the censored-covariate regression model with
 <span class="math inline">\(n = 200\)</span> observations and <span class="math inline">\(p = 10\)</span> features.</p>
-<p><strong>Response-variable model:</strong> <span class="math display">\[y_i = \beta_0 + \alpha x_i +
-\boldsymbol{\beta}^\top \mathbf{z}_i + \varepsilon_i, \quad
-\varepsilon_i \sim N(0, \sigma^2)\]</span></p>
+<p><strong>Response-variable model:</strong> <span class="math display">\[y_i = \beta_0 + \alpha x_i + \pmb{\beta}^\top
+\mathbf{z}_i + \varepsilon_i, \quad \varepsilon_i \sim N(0,
+\sigma^2)\]</span></p>
 <p><strong>Censored-covariate model:</strong> <span class="math display">\[X_i \mid \mathbf{z}_i \sim \chi^2(\mu_i), \quad
-\mu_i = \exp(\gamma_0 + \boldsymbol{\gamma}^\top
-\mathbf{z}_i)\]</span></p>
-<p>We set <span class="math inline">\(\boldsymbol{\beta}\)</span> and
-<span class="math inline">\(\boldsymbol{\gamma}\)</span> to be sparse
-with partially overlapping support, so that some features affect only
-the response, some affect only the censored covariate, and some affect
-both.</p>
+\mu_i = \exp(\gamma_0 + \pmb{\gamma}^\top \mathbf{z}_i)\]</span></p>
+<p>We set <span class="math inline">\(\pmb{\beta}\)</span> and <span class="math inline">\(\pmb{\gamma}\)</span> to be sparse with partially
+overlapping support, so that some features affect only the response,
+some affect only the censored covariate, and some affect both.</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">8371</span><span class="op">)</span></span>
 <span></span>
@@ -371,6 +359,5 @@ y)\)</span>:</p>
 
 
 
-  
-</body>
+  </body>
 </html>

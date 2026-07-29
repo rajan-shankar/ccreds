@@ -1,9 +1,9 @@
 # Plot coefficient paths
 
-Shows how the estimated feature coefficients \\\boldsymbol{\beta}\\ or
-\\\boldsymbol{\gamma}\\ change as the corresponding penalty parameter
-varies. For `component = "beta"`, the plot varies \\\lambda_1\\ while
-holding \\\lambda_2\\ fixed, and vice versa for `component = "gamma"`.
+Shows how the estimated feature coefficients \\\pmb{\beta}\\ or
+\\\pmb{\gamma}\\ change as the corresponding penalty parameter varies.
+For `component = "beta"`, the plot varies \\\lambda_1\\ while holding
+\\\lambda_2\\ fixed, and vice versa for `component = "gamma"`.
 
 ## Usage
 
