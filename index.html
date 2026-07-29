@@ -89,6 +89,10 @@
 </h2>
 <p>The main function is <code><a href="reference/ccreds.html">ccreds()</a></code>. Input data must be a data frame with columns in this order:</p>
 <table class="table">
+<colgroup>
+<col width="38%">
+<col width="61%">
+</colgroup>
 <thead><tr>
 <th>Column</th>
 <th>Description</th>
@@ -104,7 +108,7 @@
 </tr>
 <tr>
 <td><code>w</code></td>
-<td>Observed value of x (or censoring time if censored)</td>
+<td>Observed value of the censored covariate, i.e. <span class="math inline">\(x\)</span> if completely observed or <span class="math inline">\(c\)</span> if right-censored</td>
 </tr>
 <tr>
 <td><code>d</code></td>
@@ -127,10 +131,13 @@
 <span>  lambda_2s <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.01</span>, <span class="fl">0.1</span>, <span class="fl">1</span><span class="op">)</span>,</span>
 <span>  k <span class="op">=</span> <span class="fl">5</span></span>
 <span><span class="op">)</span></span></code></pre></div>
-<p>The output is a tibble with one row per (lambda_1, lambda_2) pair, containing cross-validation metrics and the full model fit. To extract the best model:</p>
+<p>The output is a tibble with one row per (lambda_1, lambda_2) pair, containing cross-validation metrics and the full model fit. Use <code><a href="reference/extract_fit.html">extract_fit()</a></code> to retrieve the best model:</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">best</span> <span class="op">&lt;-</span> <span class="va">results</span> <span class="op">|&gt;</span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/slice.html" class="external-link">slice_min</a></span><span class="op">(</span><span class="va">CV_MAE_y</span><span class="op">)</span></span>
-<span><span class="va">fit</span> <span class="op">&lt;-</span> <span class="va">best</span><span class="op">$</span><span class="va">full_fit</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span></span>
+<code class="sourceCode R"><span><span class="co"># Minimum CV MAE rule (default)</span></span>
+<span><span class="va">fit</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/extract_fit.html">extract_fit</a></span><span class="op">(</span><span class="va">results</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># One-standard-error rule (most parsimonious model within 1 SE of the minimum)</span></span>
+<span><span class="va">fit</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/extract_fit.html">extract_fit</a></span><span class="op">(</span><span class="va">results</span>, rule <span class="op">=</span> <span class="st">"1se"</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">fit</span><span class="op">$</span><span class="va">beta_0</span>    <span class="co"># Intercept (beta_0)</span></span>
 <span><span class="va">fit</span><span class="op">$</span><span class="va">alpha</span>     <span class="co"># Coefficient of censored covariate x (alpha)</span></span>

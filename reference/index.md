@@ -7,6 +7,8 @@ selection.
 
 - [`ccreds()`](https://rajan-shankar.github.io/ccreds/reference/ccreds.md)
   : Censored-Covariate Regression with Dual Selection
+- [`extract_fit()`](https://rajan-shankar.github.io/ccreds/reference/extract_fit.md)
+  : Extract a fitted model from ccreds results
 
 ## Visualisation
 

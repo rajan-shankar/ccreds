@@ -156,19 +156,16 @@ results
 
 ## Identify the best model
 
-The best \\(\lambda_1, \lambda_2)\\ pair is chosen by minimising the
-cross-validated mean absolute error for the response, `CV_MAE_y`.
+Use
+[`extract_fit()`](https://rajan-shankar.github.io/ccreds/reference/extract_fit.md)
+to retrieve the fitted model. The default `rule = "min"` selects the
+\\(\lambda_1, \lambda_2)\\ pair that minimises `CV_MAE_y`. The
+`rule = "1se"` alternative selects the most parsimonious model whose
+`CV_MAE_y` is within one standard error of the minimum.
 
 ``` r
 
-best <- results |> slice_min(CV_MAE_y, n = 1)
-best |> select(lambda_1, lambda_2, CV_MAE_y)
-#> # A tibble: 1 × 3
-#>   lambda_1 lambda_2 CV_MAE_y
-#>      <dbl>    <dbl>    <dbl>
-#> 1     0.01     0.01     35.0
-
-fit <- best$full_fit[[1]]
+fit <- extract_fit(results)
 ```
 
 We can inspect the estimated coefficients and compare them to the truth:
@@ -299,7 +296,8 @@ The typical `ccreds` workflow is:
 2.  **Fit** with
     [`ccreds()`](https://rajan-shankar.github.io/ccreds/reference/ccreds.md)
     over a grid of \\(\lambda_1, \lambda_2)\\ values.
-3.  **Select** the best model by minimising `CV_MAE_y`.
+3.  **Select** the best model with
+    [`extract_fit()`](https://rajan-shankar.github.io/ccreds/reference/extract_fit.md).
 4.  **Visualise** with
     [`plot_cv()`](https://rajan-shankar.github.io/ccreds/reference/plot_cv.md),
     [`plot_coefficient_paths()`](https://rajan-shankar.github.io/ccreds/reference/plot_coefficient_paths.md),
