@@ -124,14 +124,14 @@ results
 
 ## Identify the best model
 
-The best $(\lambda_1, \lambda_2)$ pair is chosen by minimising the
-cross-validated mean absolute error for the response, `CV_MAE_y`.
+Use `extract_fit()` to retrieve the fitted model. The default
+`rule = "min"` selects the $(\lambda_1, \lambda_2)$ pair that
+minimises `CV_MAE_y`. The `rule = "1se"` alternative selects the most
+parsimonious model whose `CV_MAE_y` is within one standard error of
+the minimum.
 
 ```{r best-model}
-best <- results |> slice_min(CV_MAE_y, n = 1)
-best |> select(lambda_1, lambda_2, CV_MAE_y)
-
-fit <- best$full_fit[[1]]
+fit <- extract_fit(results)
 ```
 
 We can inspect the estimated coefficients and compare them to the truth:
@@ -207,6 +207,6 @@ The typical `ccreds` workflow is:
    `z1`, ..., `zp`.
 2. **Fit** with `ccreds()` over a grid of $(\lambda_1, \lambda_2)$
    values.
-3. **Select** the best model by minimising `CV_MAE_y`.
+3. **Select** the best model with `extract_fit()`.
 4. **Visualise** with `plot_cv()`, `plot_coefficient_paths()`, and
    `plot_density()`.

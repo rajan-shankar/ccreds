@@ -9,6 +9,7 @@ reference:
     desc: Fit censored-covariate regression models with cross-validated penalty selection.
     contents:
       - ccreds
+      - extract_fit
 
   - title: Visualisation
     desc: Plot cross-validation results, coefficient paths, and predictive densities.

@@ -29,7 +29,7 @@ The main function is `ccreds()`. Input data must be a data frame with columns in
 |--------|-------------|
 | `case` | Integer observation ID |
 | `y` | Response variable |
-| `w` | Observed value of x (or censoring time if censored) |
+| `w` | Observed value of the censored covariate, i.e. $x$ if completely observed or $c$ if right-censored
 | `d` | Censoring indicator (1 = observed, 0 = censored) |
 | `z1`, `z2`, ..., `zp` | Features |
 
@@ -44,11 +44,14 @@ results <- ccreds(
 )
 ```
 
-The output is a tibble with one row per (lambda_1, lambda_2) pair, containing cross-validation metrics and the full model fit. To extract the best model:
+The output is a tibble with one row per (lambda_1, lambda_2) pair, containing cross-validation metrics and the full model fit. Use `extract_fit()` to retrieve the best model:
 
 ```r
-best <- results |> dplyr::slice_min(CV_MAE_y)
-fit <- best$full_fit[[1]]
+# Minimum CV MAE rule (default)
+fit <- extract_fit(results)
+
+# One-standard-error rule (most parsimonious model within 1 SE of the minimum)
+fit <- extract_fit(results, rule = "1se")
 
 fit$beta_0    # Intercept (beta_0)
 fit$alpha     # Coefficient of censored covariate x (alpha)
