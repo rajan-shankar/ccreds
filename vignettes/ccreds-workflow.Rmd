@@ -42,7 +42,7 @@ partially overlapping support, so that some features affect only the
 response, some affect only the censored covariate, and some affect both. We set the censoring rate to be approximately 50\%.
 
 ```{r simulate}
-set.seed(8371)
+set.seed(2026)
 
 n <- 200
 p <- 30
@@ -151,7 +151,7 @@ tibble(
 ## Visualise: Cross-validation heatmap
 
 `plot_cv()` shows how the CV metric varies over the penalty grid.
-The white cross marks the optimal pair.
+The red cross marks the optimal pair.
 
 ```{r plot-cv, fig.alt = "Heatmap of cross-validated MAE over the lambda grid."}
 plot_cv(results)
