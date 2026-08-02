@@ -111,7 +111,7 @@ overlapping support, so that some features affect only the response,
 some affect only the censored covariate, and some affect both. We set
 the censoring rate to be approximately 50%.</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">8371</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">2026</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">n</span> <span class="op">&lt;-</span> <span class="fl">200</span></span>
 <span><span class="va">p</span> <span class="op">&lt;-</span> <span class="fl">30</span></span>
@@ -165,27 +165,27 @@ the censoring rate to be approximately 50%.</p>
 <span></span>
 <span><span class="va">dat</span></span>
 <span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 200 × 34</span></span></span>
-<span><span class="co">#&gt;     case     y     w     d        z1     z2      z3        z4      z5    z6</span></span>
-<span><span class="co">#&gt;    <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 1</span>     1  70.9  4.58     0 -<span style="color: #BB0000;">3.65</span>     -<span style="color: #BB0000;">1.37</span>   5.27   10.2       4.54    7.54</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 2</span>     2 157.  12.6      0  2.78      4.35   3.78    5.21      7.00    1.56</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 3</span>     3 156.  12.0      1  1.80     -<span style="color: #BB0000;">0.182</span> -<span style="color: #BB0000;">1.09</span>   -<span style="color: #BB0000;">3.97</span>     -<span style="color: #BB0000;">2.81</span>    1.44</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 4</span>     4  26.4  4.13     1  0.227    -<span style="color: #BB0000;">1.15</span>  -<span style="color: #BB0000;">1.44</span>   -<span style="color: #BB0000;">6.43</span>     -<span style="color: #BB0000;">5.97</span>   -<span style="color: #BB0000;">1.22</span></span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 5</span>     5  45.3  5.27     1 -<span style="color: #BB0000;">1.56</span>     -<span style="color: #BB0000;">2.30</span>   0.606   0.970     6.37    5.09</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 6</span>     6 122.   2.02     0 -<span style="color: #BB0000;">0.000</span><span style="color: #BB0000; text-decoration: underline;">930</span> -<span style="color: #BB0000;">2.10</span>   0.476  -<span style="color: #BB0000;">2.46</span>      5.04    4.09</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 7</span>     7  24.9  1.37     0 -<span style="color: #BB0000;">3.73</span>     -<span style="color: #BB0000;">4.34</span>  -<span style="color: #BB0000;">1.58</span>   -<span style="color: #BB0000;">0.000</span><span style="color: #BB0000; text-decoration: underline;">185</span>  0.026<span style="text-decoration: underline;">0</span>  3.69</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 8</span>     8 128.   7.74     1 -<span style="color: #BB0000;">0.091</span><span style="color: #BB0000; text-decoration: underline;">1</span>    3.58   2.09    2.92      5.13    1.11</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 9</span>     9  96.6  7.02     1 -<span style="color: #BB0000;">0.101</span>     2.45   2.64    1.69      1.21    2.16</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">10</span>    10 113.   5.54     0 -<span style="color: #BB0000;">4.11</span>     -<span style="color: #BB0000;">1.80</span>   0.093<span style="text-decoration: underline;">6</span> -<span style="color: #BB0000;">4.47</span>     -<span style="color: #BB0000;">1.48</span>   -<span style="color: #BB0000;">1.56</span></span></span>
+<span><span class="co">#&gt;     case      y     w     d     z1      z2     z3       z4     z5      z6    z7</span></span>
+<span><span class="co">#&gt;    <span style="color: #949494; font-style: italic;">&lt;int&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 1</span>     1  -<span style="color: #BB0000;">6.33</span>  3.72     0 -<span style="color: #BB0000;">3.80</span>  -<span style="color: #BB0000;">3.24</span>   -<span style="color: #BB0000;">1.85</span>  -<span style="color: #BB0000;">0.023</span><span style="color: #BB0000; text-decoration: underline;">1</span>  -<span style="color: #BB0000;">3.34</span>  -<span style="color: #BB0000;">1.43</span>    4.59</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 2</span>     2  23.5   3.46     1 -<span style="color: #BB0000;">4.53</span>  -<span style="color: #BB0000;">0.069</span><span style="color: #BB0000; text-decoration: underline;">0</span> -<span style="color: #BB0000;">3.93</span>   2.98     7.22   5.55    2.89</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 3</span>     3  -<span style="color: #BB0000;">3.79</span>  2.85     0  0.698 -<span style="color: #BB0000;">7.17</span>   -<span style="color: #BB0000;">6.90</span>  -<span style="color: #BB0000;">1.07</span>     2.17  -<span style="color: #BB0000;">1.17</span>   -<span style="color: #BB0000;">1.55</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 4</span>     4  -<span style="color: #BB0000;">2.67</span>  3.63     1 -<span style="color: #BB0000;">5.12</span>  -<span style="color: #BB0000;">0.847</span>  -<span style="color: #BB0000;">0.182</span> -<span style="color: #BB0000;">4.16</span>    -<span style="color: #BB0000;">2.85</span>  -<span style="color: #BB0000;">4.43</span>   -<span style="color: #BB0000;">4.50</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 5</span>     5 159.    7.11     0  3.32  -<span style="color: #BB0000;">0.365</span>  -<span style="color: #BB0000;">1.42</span>  -<span style="color: #BB0000;">4.99</span>     0.946  0.200   2.99</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 6</span>     6  95.5   3.86     0  1.23  -<span style="color: #BB0000;">1.26</span>    3.49   0.007<span style="text-decoration: underline;">96</span>  3.45   0.059<span style="text-decoration: underline;">4</span>  2.18</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 7</span>     7   5.01  4.32     1 -<span style="color: #BB0000;">3.31</span>   2.51    3.72   4.71     3.38   4.61    3.32</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 8</span>     8 173.    6.34     0  1.74   0.959   0.681  1.35     4.43   5.00    2.85</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 9</span>     9 226.   11.2      0  5.11   4.75    2.92  -<span style="color: #BB0000;">0.642</span>    0.462 -<span style="color: #BB0000;">1.39</span>   -<span style="color: #BB0000;">5.84</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">10</span>    10  54.8   8.13     1  1.18  -<span style="color: #BB0000;">1.45</span>    2.00  -<span style="color: #BB0000;">0.840</span>   -<span style="color: #BB0000;">0.143</span>  2.43    2.77</span></span>
 <span><span class="co">#&gt; <span style="color: #949494;"># ℹ 190 more rows</span></span></span>
-<span><span class="co">#&gt; <span style="color: #949494;"># ℹ 24 more variables: z7 &lt;dbl&gt;, z8 &lt;dbl&gt;, z9 &lt;dbl&gt;, z10 &lt;dbl&gt;, z11 &lt;dbl&gt;,</span></span></span>
-<span><span class="co">#&gt; <span style="color: #949494;">#   z12 &lt;dbl&gt;, z13 &lt;dbl&gt;, z14 &lt;dbl&gt;, z15 &lt;dbl&gt;, z16 &lt;dbl&gt;, z17 &lt;dbl&gt;,</span></span></span>
-<span><span class="co">#&gt; <span style="color: #949494;">#   z18 &lt;dbl&gt;, z19 &lt;dbl&gt;, z20 &lt;dbl&gt;, z21 &lt;dbl&gt;, z22 &lt;dbl&gt;, z23 &lt;dbl&gt;,</span></span></span>
-<span><span class="co">#&gt; <span style="color: #949494;">#   z24 &lt;dbl&gt;, z25 &lt;dbl&gt;, z26 &lt;dbl&gt;, z27 &lt;dbl&gt;, z28 &lt;dbl&gt;, z29 &lt;dbl&gt;, z30 &lt;dbl&gt;</span></span></span></code></pre></div>
+<span><span class="co">#&gt; <span style="color: #949494;"># ℹ 23 more variables: z8 &lt;dbl&gt;, z9 &lt;dbl&gt;, z10 &lt;dbl&gt;, z11 &lt;dbl&gt;, z12 &lt;dbl&gt;,</span></span></span>
+<span><span class="co">#&gt; <span style="color: #949494;">#   z13 &lt;dbl&gt;, z14 &lt;dbl&gt;, z15 &lt;dbl&gt;, z16 &lt;dbl&gt;, z17 &lt;dbl&gt;, z18 &lt;dbl&gt;,</span></span></span>
+<span><span class="co">#&gt; <span style="color: #949494;">#   z19 &lt;dbl&gt;, z20 &lt;dbl&gt;, z21 &lt;dbl&gt;, z22 &lt;dbl&gt;, z23 &lt;dbl&gt;, z24 &lt;dbl&gt;,</span></span></span>
+<span><span class="co">#&gt; <span style="color: #949494;">#   z25 &lt;dbl&gt;, z26 &lt;dbl&gt;, z27 &lt;dbl&gt;, z28 &lt;dbl&gt;, z29 &lt;dbl&gt;, z30 &lt;dbl&gt;</span></span></span></code></pre></div>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Censoring rate should be approximately 50%</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/mean.html" class="external-link">mean</a></span><span class="op">(</span><span class="va">dat</span><span class="op">$</span><span class="va">d</span> <span class="op">==</span> <span class="fl">0</span><span class="op">)</span></span>
-<span><span class="co">#&gt; [1] 0.475</span></span></code></pre></div>
+<span><span class="co">#&gt; [1] 0.46</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="fit-the-model">Fit the model<a class="anchor" aria-label="anchor" href="#fit-the-model"></a>
@@ -208,23 +208,24 @@ would use a finer grid and potentially run in parallel with
 <span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 25 × 8</span></span></span>
 <span><span class="co">#&gt;    lambda_1 lambda_2 full_fit          CV_MAE_y CV_MAE_y_SE CV_MAE_x CV_MAE_x_SE</span></span>
 <span><span class="co">#&gt;       <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;list&gt;</span>               <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>       <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>       <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 1</span>   0.000<span style="text-decoration: underline;">1</span>   0.000<span style="text-decoration: underline;">1</span> <span style="color: #949494;">&lt;named list [13]&gt;</span>     32.7        1.77     2.92       0.267</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 2</span>   0.000<span style="text-decoration: underline;">1</span>   0.001  <span style="color: #949494;">&lt;named list [13]&gt;</span>     32.6        1.76     2.92       0.265</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 3</span>   0.000<span style="text-decoration: underline;">1</span>   0.01   <span style="color: #949494;">&lt;named list [13]&gt;</span>     32.1        1.58     2.88       0.243</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 4</span>   0.000<span style="text-decoration: underline;">1</span>   0.1    <span style="color: #949494;">&lt;named list [13]&gt;</span>     29.8        1.52     2.70       0.160</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 5</span>   0.000<span style="text-decoration: underline;">1</span>   1      <span style="color: #949494;">&lt;named list [13]&gt;</span>     33.4        1.23     3.00       0.204</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 6</span>   0.001    0.000<span style="text-decoration: underline;">1</span> <span style="color: #949494;">&lt;named list [13]&gt;</span>     32.7        1.79     2.92       0.268</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 7</span>   0.001    0.001  <span style="color: #949494;">&lt;named list [13]&gt;</span>     32.6        1.77     2.92       0.266</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 8</span>   0.001    0.01   <span style="color: #949494;">&lt;named list [13]&gt;</span>     32.0        1.59     2.88       0.244</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 9</span>   0.001    0.1    <span style="color: #949494;">&lt;named list [13]&gt;</span>     29.7        1.50     2.69       0.160</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">10</span>   0.001    1      <span style="color: #949494;">&lt;named list [13]&gt;</span>     33.4        1.22     3.00       0.203</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 1</span>   0.000<span style="text-decoration: underline;">1</span>   0.000<span style="text-decoration: underline;">1</span> <span style="color: #949494;">&lt;named list [13]&gt;</span>     38.9        2.64     3.19       0.401</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 2</span>   0.000<span style="text-decoration: underline;">1</span>   0.001  <span style="color: #949494;">&lt;named list [13]&gt;</span>     38.9        2.63     3.19       0.399</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 3</span>   0.000<span style="text-decoration: underline;">1</span>   0.01   <span style="color: #949494;">&lt;named list [13]&gt;</span>     38.7        2.48     3.15       0.380</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 4</span>   0.000<span style="text-decoration: underline;">1</span>   0.1    <span style="color: #949494;">&lt;named list [13]&gt;</span>     37.3        1.85     2.93       0.300</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 5</span>   0.000<span style="text-decoration: underline;">1</span>   1      <span style="color: #949494;">&lt;named list [13]&gt;</span>     40.1        1.28     2.97       0.178</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 6</span>   0.001    0.000<span style="text-decoration: underline;">1</span> <span style="color: #949494;">&lt;named list [13]&gt;</span>     38.9        2.68     3.18       0.400</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 7</span>   0.001    0.001  <span style="color: #949494;">&lt;named list [13]&gt;</span>     38.8        2.67     3.18       0.398</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 8</span>   0.001    0.01   <span style="color: #949494;">&lt;named list [13]&gt;</span>     38.7        2.52     3.14       0.378</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 9</span>   0.001    0.1    <span style="color: #949494;">&lt;named list [13]&gt;</span>     37.2        1.93     2.91       0.300</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">10</span>   0.001    1      <span style="color: #949494;">&lt;named list [13]&gt;</span>     40.1        1.21     2.96       0.178</span></span>
 <span><span class="co">#&gt; <span style="color: #949494;"># ℹ 15 more rows</span></span></span>
 <span><span class="co">#&gt; <span style="color: #949494;"># ℹ 1 more variable: time &lt;drtn&gt;</span></span></span>
 <span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/Round.html" class="external-link">round</a></span><span class="op">(</span><span class="va">results</span><span class="op">$</span><span class="va">time</span>, digits <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Time differences in secs</span></span>
-<span><span class="co">#&gt;  [1] 7.30 6.89 6.78 6.10 5.90 5.85 5.88 5.92 5.25 5.27 4.01 4.08 3.94 3.60 3.83</span></span>
-<span><span class="co">#&gt; [16] 2.91 2.91 2.91 2.66 2.72 2.92 2.76 2.81 2.58 2.55</span></span></code></pre></div>
+<span><span class="co">#&gt;  [1] 10.50  9.97  9.63  8.85  8.06  8.78  8.70  8.68  7.90  7.19  5.59  5.67</span></span>
+<span><span class="co">#&gt; [13]  5.49  4.97  4.50  4.01  3.98  3.92  3.23  2.93  4.39  4.21  4.17  3.64</span></span>
+<span><span class="co">#&gt; [25]  3.18</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="identify-the-best-model">Identify the best model<a class="anchor" aria-label="anchor" href="#identify-the-best-model"></a>
@@ -248,12 +249,12 @@ to the truth:</p>
 <span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 30 × 3</span></span></span>
 <span><span class="co">#&gt;    feature true_beta estimated_beta</span></span>
 <span><span class="co">#&gt;    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>       <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>          <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 1</span> z1              4          3.23 </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 1</span> z1              4          3.51 </span></span>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;"> 2</span> z2              4          4.34 </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 3</span> z3              2          1.54 </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 3</span> z3              2          1.38 </span></span>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;"> 4</span> z4              0          0    </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 5</span> z5              0          0    </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 6</span> z6              0          0.329</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 5</span> z5              0          0.161</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 6</span> z6              0          0    </span></span>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;"> 7</span> z7              0          0    </span></span>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;"> 8</span> z8              0          0    </span></span>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;"> 9</span> z9              0          0    </span></span>
@@ -269,23 +270,23 @@ to the truth:</p>
 <span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 30 × 3</span></span></span>
 <span><span class="co">#&gt;    feature true_gamma estimated_gamma</span></span>
 <span><span class="co">#&gt;    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>        <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>           <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 1</span> z1            0.04         0.029<span style="text-decoration: underline;">7</span> </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 2</span> z2            0.04         0.041<span style="text-decoration: underline;">8</span> </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 3</span> z3            0.02         0.034<span style="text-decoration: underline;">1</span> </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 4</span> z4            0.02         0      </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 1</span> z1            0.04         0.028<span style="text-decoration: underline;">8</span> </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 2</span> z2            0.04         0.034<span style="text-decoration: underline;">1</span> </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 3</span> z3            0.02         0.036<span style="text-decoration: underline;">3</span> </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 4</span> z4            0.02         0.003<span style="text-decoration: underline;">65</span></span></span>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;"> 5</span> z5            0            0      </span></span>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;"> 6</span> z6            0            0      </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 7</span> z7            0           -<span style="color: #BB0000;">0.004</span><span style="color: #BB0000; text-decoration: underline;">84</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 7</span> z7            0            0      </span></span>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;"> 8</span> z8            0            0      </span></span>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;"> 9</span> z9            0            0      </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">10</span> z10           0            0      </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">10</span> z10           0            0.012<span style="text-decoration: underline;">6</span> </span></span>
 <span><span class="co">#&gt; <span style="color: #949494;"># ℹ 20 more rows</span></span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="visualise-cross-validation-heatmap">Visualise: Cross-validation heatmap<a class="anchor" aria-label="anchor" href="#visualise-cross-validation-heatmap"></a>
 </h2>
 <p><code><a href="../reference/plot_cv.html">plot_cv()</a></code> shows how the CV metric varies over the
-penalty grid. The white cross marks the optimal pair.</p>
+penalty grid. The red cross marks the optimal pair.</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/plot_cv.html">plot_cv</a></span><span class="op">(</span><span class="va">results</span><span class="op">)</span></span></code></pre></div>
 <p><img src="ccreds-workflow_files/figure-html/plot-cv-1.png" class="r-plt" alt="Heatmap of cross-validated MAE over the lambda grid." width="672"></p>
